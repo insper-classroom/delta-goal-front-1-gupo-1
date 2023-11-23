@@ -90,29 +90,48 @@ def realizar_login(username, senha):
 # Pagina Troca de Senha
 
 def troca_senha():
-    st.title("Troca de Senha")
+    col1, col2, col3 = st.columns([2,1,2])
 
-    username = st.text_input("Digite o seu username")
+    with col1:
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.image('assets\deltagolalogo.png')
+        st.write('')
+        st.image('assets\logodelta2.png')
 
-    if st.button("Validar"):
-        resposta_usuario = requests.get(f'http://127.0.0.1:5000/verificar_usuario/{username}')
-        resposta_usuario = resposta_usuario.json()
+    with col2:
+        st.write("")
 
-        if resposta_usuario['existe']:
-            st.session_state['resposta_troca_senha']= True
-            st.success(resposta_usuario['mensagem'])
-        else:
-            st.session_state['resposta_troca_senha'] = False
-            st.warning(resposta_usuario['mensagem'])
-    if st.button("Voltar para Login"):
-        st.session_state['pagina'] = 'login'
-        st.rerun()   
-    if st.session_state['resposta_troca_senha']:
-        nova_senha = st.text_input("Digite sua nova senha", type="password")
-        if st.button("Atualizar Senha!"):
-            resposta_senha = requests.post(f'http://127.0.0.1:5000/alterar_senha/{username}/{nova_senha}')
-            resposta_senha = resposta_senha.json()
-            st.success(resposta_senha['mensagem'])
+    with col3:
+        st.markdown('<h1 style="text-align: center">Redefinir Senha</h1>', unsafe_allow_html=True)
+        st.write('')
+
+        username = st.text_input("Digite o seu username")
+
+        if st.button("Validar"):
+            resposta_usuario = requests.get(f'http://127.0.0.1:5000/verificar_usuario/{username}')
+            resposta_usuario = resposta_usuario.json()
+
+            if resposta_usuario['existe']:
+                st.session_state['resposta_troca_senha']= True
+                st.success(resposta_usuario['mensagem'])
+            else:
+                st.session_state['resposta_troca_senha'] = False
+                st.warning(resposta_usuario['mensagem'])
+        if st.button("Voltar para Login"):
+            st.session_state['pagina'] = 'login'
+            st.rerun()   
+        if st.session_state['resposta_troca_senha']:
+            nova_senha = st.text_input("Digite sua nova senha", type="password")
+            if st.button("Atualizar Senha!"):
+                resposta_senha = requests.post(f'http://127.0.0.1:5000/alterar_senha/{username}/{nova_senha}')
+                resposta_senha = resposta_senha.json()
+                st.success(resposta_senha['mensagem'])
     
 
 
