@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import json
 
 # Variaveis "Globais"
 
@@ -35,8 +36,7 @@ def main():
 
 # Pagina de Login
 def login():
-    entra = False
-    vazio = False
+    dados_existentes = False
 
     col1, col2, col3 = st.columns([2,1,2])
 
@@ -46,7 +46,7 @@ def login():
         st.write(" ")
         st.write(" ")
         st.write(" ")
-        st.image('assets\deltagolalogo.png')
+        st.image('assets/deltagolalogo.png')
         st.write('')
         st.markdown(
 """
@@ -72,34 +72,29 @@ unsafe_allow_html=True
 
 
         if st.button("Login"):
-            if username == '' and senha == '' or username == '' or senha == '':
-                vazio = True
-            else:
-                entra = True
-                mensagem, erro = realizar_login(username, senha)
+            dados_existentes = True
+            dados = realizar_login(username, senha)
 
         if st.button("Esqueci a Senha"):
             st.session_state['pagina'] = "troca_senha"
-            st.success('oi')
             st.rerun()
-
-        if entra:
-            if erro:
-                st.warning(mensagem)
-            else:
-                st.success(mensagem)
-        
-        if vazio:
-            st.warning("Preencha os campos corretamente!")
-    # except:
-    #     st.warning("Preencha os campos corretamente!")
+    if dados_existentes:
+        if dados['erro']:
+            st.warning(dados['mensagem'])
+        else:
+            st.success(dados['mensagem'])
 
 # Funcao Auxiliar para Login
 
 def realizar_login(username, senha):
-    resposta = requests.post(f'http://127.0.0.1:5000/verificar_login/{username}/{senha}')
-    resposta = resposta.json()
-    return resposta[1]['mensagem'] , resposta[0]['erro']
+    dados = {'username': username, 'senha': senha}
+    dados_json = json.dumps(dados)
+
+    headers = {'Content-Type': 'application/json'}
+    resposta = requests.post('http://127.0.0.1:5000/verificar_login', data=dados_json, headers=headers)
+    resposta_json = resposta.json()
+
+    return resposta_json
 
 
 
@@ -114,7 +109,7 @@ def troca_senha():
         st.write(" ")
         st.write(" ")
         st.write(" ")
-        st.image('assets\deltagolalogo.png')
+        st.image('assets/deltagolalogo.png')
         st.write('')
         st.markdown(
     """
@@ -143,22 +138,36 @@ def troca_senha():
             st.rerun()   
 
         if st.button("Validar"):
-            resposta_usuario = requests.get(f'http://127.0.0.1:5000/verificar_usuario/{username}')
-            resposta_usuario = resposta_usuario.json()
+            dados = {'username': username}
+            headers = {'Content-Type': 'application/json'}
 
-            if resposta_usuario['existe']:
-                st.session_state['resposta_troca_senha']= True
-                st.success(resposta_usuario['mensagem'])
+            resposta_usuario = requests.post('http://127.0.0.1:5000/verificar_usuario', data=json.dumps(dados), headers=headers)
+
+            resposta_usuario_json = resposta_usuario.json()
+
+            if resposta_usuario_json['existe']:
+                st.session_state['resposta_troca_senha'] = True
+                st.success(resposta_usuario_json['mensagem'])
             else:
                 st.session_state['resposta_troca_senha'] = False
-                st.warning(resposta_usuario['mensagem'])
+                st.warning(resposta_usuario_json['mensagem'])
                 
         if st.session_state['resposta_troca_senha']:
             nova_senha = st.text_input("Digite sua nova senha", type="password")
             if st.button("Atualizar Senha!"):
-                resposta_senha = requests.post(f'http://127.0.0.1:5000/alterar_senha/{username}/{nova_senha}')
-                resposta_senha = resposta_senha.json()
-                st.success(resposta_senha['mensagem'])
+                # Criar um dicionário com o nome de usuário e nova senha
+                dados = {'username': username, 'nova_senha': nova_senha}
+
+                # Configurar o cabeçalho para indicar que estamos enviando JSON
+                headers = {'Content-Type': 'application/json'}
+
+                # Enviar a solicitação POST com os dados no corpo
+                resposta_senha = requests.post('http://127.0.0.1:5000/alterar_senha', data=json.dumps(dados), headers=headers)
+
+                # Interpretar a resposta como JSON
+                resposta_senha_json = resposta_senha.json()
+
+                st.success(resposta_senha_json['mensagem'])
     
 
 
