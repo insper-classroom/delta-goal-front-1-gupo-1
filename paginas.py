@@ -47,13 +47,21 @@ def login():
             st.write(" ")
             st.write(" ")
             st.write(" ")
-            st.write(" ")
-            st.write(" ")
             st.image('assets\deltagolalogo.png')
             st.write('')
-            st.image('assets\logodelta2.png')
-
-        
+            # st.image('assets\logodelta2.png')
+            st.markdown(
+    """
+    <h3 style="
+        line-height: 40px;
+        color: #333333;
+        font-family: 'Helvetica Neue', sans-serif;
+        ">
+        Artificial Intelligence to monitor players <span style="color: #FF69B4;">every</span> instant of <span style="color: #0000FF;">every</span> match.
+    </h3>
+    """,
+    unsafe_allow_html=True
+)
         with col2:
             st.write('')
 
