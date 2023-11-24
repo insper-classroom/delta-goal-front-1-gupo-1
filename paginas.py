@@ -129,6 +129,10 @@ def troca_senha():
 
         username = st.text_input("Digite o seu username")
 
+        if st.button("Voltar para Login"):
+            st.session_state['pagina'] = 'login'
+            st.rerun()   
+
         if st.button("Validar"):
             resposta_usuario = requests.get(f'http://127.0.0.1:5000/verificar_usuario/{username}')
             resposta_usuario = resposta_usuario.json()
@@ -139,9 +143,7 @@ def troca_senha():
             else:
                 st.session_state['resposta_troca_senha'] = False
                 st.warning(resposta_usuario['mensagem'])
-        if st.button("Voltar para Login"):
-            st.session_state['pagina'] = 'login'
-            st.rerun()   
+                
         if st.session_state['resposta_troca_senha']:
             nova_senha = st.text_input("Digite sua nova senha", type="password")
             if st.button("Atualizar Senha!"):
