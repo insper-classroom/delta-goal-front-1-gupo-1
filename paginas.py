@@ -36,54 +36,63 @@ def main():
 # Pagina de Login
 def login():
     entra = False
+    vazio = False
 
+    col1, col2, col3 = st.columns([2,1,2])
 
-    try:
-        col1, col2, col3 = st.columns([2,1,2])
-
-        with col1:
-            st.write(" ")
-            st.write(" ")
-            st.write(" ")
-            st.write(" ")
-            st.write(" ")
-            st.image('assets\deltagolalogo.png')
-            st.write('')
-            st.markdown(
-    """
-    <h3 style="
-        line-height: 40px;
-        color: #333333;
-        font-family: 'Helvetica Neue', sans-serif;
-        ">
-        Artificial Intelligence to monitor players <span style="color: #FF69B4;">every</span> instant of <span style="color: #0000FF;">every</span> match.
-    </h3>
-    """,
-    unsafe_allow_html=True
+    with col1:
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.write(" ")
+        st.image('assets\deltagolalogo.png')
+        st.write('')
+        st.markdown(
+"""
+<h3 style="
+    line-height: 40px;
+    color: #333333;
+    font-family: 'Helvetica Neue', sans-serif;
+    ">
+    Artificial Intelligence to monitor players <span style="color: #FF69B4;">every</span> instant of <span style="color: #0000FF;">every</span> match.
+</h3>
+""",
+unsafe_allow_html=True
 )
-        with col2:
-            st.write('')
+    with col2:
+        st.write('')
 
-                
-        with col3:
-            st.markdown('<h1 style="text-align: center">Login</h1>', unsafe_allow_html=True)
-            st.write('')
-            entra = None
-            username = st.text_input("Usuário")
-            senha = st.text_input("Senha", type="password")
-            if st.button("Login"):
+            
+    with col3:
+        st.markdown('<h1 style="text-align: center">Login</h1>', unsafe_allow_html=True)
+        st.write('')
+        username = st.text_input("Usuário")
+        senha = st.text_input("Senha", type="password")
+
+
+        if st.button("Login"):
+            if username == '' and senha == '' or username == '' or senha == '':
+                vazio = True
+            else:
                 entra = True
                 mensagem, erro = realizar_login(username, senha)
-            if st.button("Esqueci a Senha"):
-                st.session_state['pagina'] = "troca_senha"
-                st.rerun()
-            if entra:
-                if erro:
-                    st.warning(mensagem)
-                else:
-                    st.success(mensagem)
-    except:
-        st.warning("Preencha os campos corretamente!")
+
+        if st.button("Esqueci a Senha"):
+            st.session_state['pagina'] = "troca_senha"
+            st.success('oi')
+            st.rerun()
+
+        if entra:
+            if erro:
+                st.warning(mensagem)
+            else:
+                st.success(mensagem)
+        
+        if vazio:
+            st.warning("Preencha os campos corretamente!")
+    # except:
+    #     st.warning("Preencha os campos corretamente!")
 
 # Funcao Auxiliar para Login
 
