@@ -87,11 +87,11 @@ unsafe_allow_html=True
 # Funcao Auxiliar para Login
 
 def realizar_login(username, senha):
-    dados = {'username': username, 'senha': senha}
+    dados = {'team': username, 'password': senha}
     dados_json = json.dumps(dados)
 
     headers = {'Content-Type': 'application/json'}
-    resposta = requests.post('http://127.0.0.1:5000/verificar_login', data=dados_json, headers=headers)
+    resposta = requests.post('http://127.0.0.1:5000/login/verificar_login', data=dados_json, headers=headers)
     resposta_json = resposta.json()
 
     return resposta_json
@@ -138,10 +138,10 @@ def troca_senha():
             st.rerun()   
 
         if st.button("Validar"):
-            dados = {'username': username}
+            dados = {'team': username}
             headers = {'Content-Type': 'application/json'}
 
-            resposta_usuario = requests.post('http://127.0.0.1:5000/verificar_usuario', data=json.dumps(dados), headers=headers)
+            resposta_usuario = requests.post('http://127.0.0.1:5000/login/verificar_time', data=json.dumps(dados), headers=headers)
 
             resposta_usuario_json = resposta_usuario.json()
 
@@ -156,13 +156,13 @@ def troca_senha():
             nova_senha = st.text_input("Digite sua nova senha", type="password")
             if st.button("Atualizar Senha!"):
                 # Criar um dicionário com o nome de usuário e nova senha
-                dados = {'username': username, 'nova_senha': nova_senha}
+                dados = {'team': username, 'nova_senha': nova_senha}
 
                 # Configurar o cabeçalho para indicar que estamos enviando JSON
                 headers = {'Content-Type': 'application/json'}
 
                 # Enviar a solicitação POST com os dados no corpo
-                resposta_senha = requests.post('http://127.0.0.1:5000/alterar_senha', data=json.dumps(dados), headers=headers)
+                resposta_senha = requests.post('http://127.0.0.1:5000/login/alterar_senha', data=json.dumps(dados), headers=headers)
 
                 # Interpretar a resposta como JSON
                 resposta_senha_json = resposta_senha.json()
