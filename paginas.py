@@ -12,6 +12,7 @@ if 'pagina' not in st.session_state:
 # Variavel para controle da interface de redefinir a senha
 if 'resposta_troca_senha' not in st.session_state:
     st.session_state['resposta_troca_senha'] = False
+
 st.markdown(
     """
     <style>
@@ -32,7 +33,8 @@ def main():
         login()
     elif st.session_state['pagina'] == "troca_senha":
         troca_senha()
-        
+    elif st.session_state['pagina'] == "lista_partidas":
+        lista_partidas()
 
 # Pagina de Login
 def login():
@@ -74,10 +76,13 @@ unsafe_allow_html=True
         if st.button("Login"):
             dados_existentes = True
             dados = realizar_login(username, senha)
+            st.session_state['pagina'] = "lista_partidas"
+            st.rerun()
 
         if st.button("Esqueci a Senha"):
             st.session_state['pagina'] = "troca_senha"
             st.rerun()
+
     if dados_existentes:
         if dados['erro']:
             st.warning(dados['mensagem'])
@@ -92,6 +97,7 @@ def realizar_login(username, senha):
 
     headers = {'Content-Type': 'application/json'}
     resposta = requests.post('http://127.0.0.1:5000/login/verificar_login', data=dados_json, headers=headers)
+    print(resposta.json())
     resposta_json = resposta.json()
 
     return resposta_json
@@ -168,7 +174,60 @@ def troca_senha():
                 resposta_senha_json = resposta_senha.json()
 
                 st.success(resposta_senha_json['mensagem'])
+
     
+def lista_partidas():
+     # Adicionando estilo para efeito hover na lista
+    st.markdown(
+        """
+        <style>
+        /* Estilo para efeito hover */
+        ul li:hover {
+            color: red; /* Altere as propriedades de acordo com sua preferência */
+            cursor: pointer;
+        }
+
+        /* Estilo para permitir a rolagem da página */
+        .scrollable {
+            overflow-y: scroll;
+            height: 500px; /* Altura máxima da lista antes de ativar a rolagem */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <style>
+        /* Posicionamento e tamanho da imagem */
+        .corner-image {
+            position: fixed;
+            width: 150px; /* Define a largura da imagem */
+            top: 10px;
+            left: 10px;
+            z-index: 1; /* Garante que a imagem fique sobre o conteúdo */
+        }
+        p {
+            justify-content: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Adicionando a imagem com a classe corner-image
+    st.image('assets/deltagolalogo.png', width=150, use_column_width=False)
+
+    resposta = requests.get('http://127.0.0.1:5000/historico')
+    resposta = resposta.json()
+    print(resposta)
+
+    st.markdown('<h1 style="text-align: center">Partidas</h1>', unsafe_allow_html=True)
+
+    st.write(f'<p style="text-align: center">{resposta}<b></b></p>', unsafe_allow_html=True)
+    st.write('<p style="text-align: center">Palmeiras <b>X</b> Bragantino</p>', unsafe_allow_html=True)
+
 
 
 if __name__ == "__main__":
