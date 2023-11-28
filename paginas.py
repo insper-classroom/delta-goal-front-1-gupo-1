@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import json
+import datetime
 
 # Esta variavel controlara nosso fluxo de telas
 # na Funcao main organizamos qual pagina precisa ser mostrada
@@ -180,60 +181,48 @@ def troca_senha():
              
                 st.success(resposta_senha_json['mensagem'])
 
+
 def lista_partidas():
-     # Adicionando estilo para efeito hover na lista
-    st.markdown(
-        """
-        <style>
-        /* Estilo para efeito hover */
-        ul li:hover {
-            color: red; /* Altere as propriedades de acordo com sua preferência */
-            cursor: pointer;
-        }
+    st.sidebar.title("Aba de Opções")
+    st.sidebar.image('assets/deltagolalogo.png', width=100)
+    st.sidebar.write("Opção 1")
+    st.sidebar.write("Opção 2")
+    st.sidebar.write("Opção 3")
+    st.sidebar.write("Opção 4")
+    st.sidebar.write("Opção 5")
 
-        /* Estilo para permitir a rolagem da página */
-        .scrollable {
-            overflow-y: scroll;
-            height: 500px; /* Altura máxima da lista antes de ativar a rolagem */
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    st.title('Partidas')
 
-    st.markdown(
-        """
-        <style>
-        /* Posicionamento e tamanho da imagem */
-        .corner-image {
-            position: fixed;
-            width: 150px; /* Define a largura da imagem */
-            top: 10px;
-            left: 10px;
-            z-index: 1; /* Garante que a imagem fique sobre o conteúdo */
-        }
-        p {
-            justify-content: center;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # Seleção de intervalo de tempo entre duas datas (opcional)
+    start_date = st.sidebar.date_input("Selecione a data de início", None)
+    end_date = st.sidebar.date_input("Selecione a data de término", None)
 
-    # Adicionando a imagem com a classe corner-image
-    st.image('assets/deltagolalogo.png', width=150, use_column_width=False)
-
-    resposta = requests.get('http://127.0.0.1:5000/historico')
-    resposta = resposta.json()
-    print(resposta)
-
-    st.markdown('<h1 style="text-align: center">Partidas</h1>', unsafe_allow_html=True)
-
-    st.write(f'<p style="text-align: center">{resposta}<b></b></p>', unsafe_allow_html=True)
-    st.write('<p style="text-align: center">Palmeiras <b>X</b> Bragantino</p>', unsafe_allow_html=True)
-    
+    # Verificar se as datas foram selecionadas corretamente
+    if start_date and end_date:
+        if start_date <= end_date:
+            st.success(f'Selecionado intervalo de {start_date} a {end_date}')
+            games = [
+                {"Jogo": "Jogo 1", "Data": datetime.date.today() - datetime.timedelta(days=1)},
+                {"Jogo": "Jogo 2", "Data": datetime.date.today() - datetime.timedelta(days=3)},
+                {"Jogo": "Jogo 3", "Data": datetime.date.today() - datetime.timedelta(days=5)},
+                {"Jogo": "Jogo 4", "Data": datetime.date.today() - datetime.timedelta(days=7)},
+                {"Jogo": "Jogo 5", "Data": datetime.date.today() - datetime.timedelta(days=9)}
+            ]
+            filtered_games = [game["Jogo"] for game in games if start_date <= game["Data"] <= end_date]
+            if filtered_games:
+                st.write("Jogos dentro do intervalo selecionado:")
+                for game in filtered_games:
+                    st.write(game)
+            else:
+                st.write("Nenhum jogo disponível para o intervalo selecionado.")
+        else:
+            st.error("Erro: A data de início deve ser anterior à data de término.")
+    else:
+        st.write("Todos os jogos:")
+        games = ["Jogo 1", "Jogo 2", "Jogo 3", "Jogo 4", "Jogo 5"]
+        for game in games:
+            st.write(game)
 
 
 if __name__ == "__main__":
     main()
-    
