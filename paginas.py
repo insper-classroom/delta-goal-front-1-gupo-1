@@ -101,6 +101,7 @@ def realizar_login(username, senha):
     headers = {'Content-Type': 'application/json'}
     resposta = requests.post('http://127.0.0.1:5000/login/verificar_login', data=dados_json, headers=headers)
     resposta_json = resposta.json()
+    st.session_state['Authorization'] = resposta_json['token']
 
     return resposta_json
 
@@ -219,7 +220,11 @@ def lista_partidas():
             st.error("Erro: A data de início deve ser anterior à data de término.")
     else:
         st.write("Todos os jogos:")
-        games = ["Jogo 1", "Jogo 2", "Jogo 3", "Jogo 4", "Jogo 5"]
+        headers = {'Authorization': st.session_state['Authorization']}
+        print(headers)
+        resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
+        games = resposta
+        print(games)
         for game in games:
             st.write(game)
 
