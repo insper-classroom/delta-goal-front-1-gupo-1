@@ -182,51 +182,39 @@ def troca_senha():
              
                 st.success(resposta_senha_json['mensagem'])
 
+import streamlit as st
+import requests
+
+# Exemplo de resposta do servidor (substitua isso pelo seu JSON real)
+exemplo_json = b'{"jogos": [{"time": {"1": {"logo": "https://api.deltagoal.ai/1/logo.png", "nome": "Time A"}}, "id": "6563850a8388630a37533967"}]}'
 
 def lista_partidas():
-    st.sidebar.title("Aba de Opções")
-    st.sidebar.image('assets/deltagolalogo.png', width=100)
-    st.sidebar.write("Opção 1")
-    st.sidebar.write("Opção 2")
-    st.sidebar.write("Opção 3")
-    st.sidebar.write("Opção 4")
-    st.sidebar.write("Opção 5")
-
+    st.image('assets/deltagolalogo.png', width=300, use_column_width=False)
     st.title('Partidas')
 
-    # Seleção de intervalo de tempo entre duas datas (opcional)
-    start_date = st.sidebar.date_input("Selecione a data de início", None)
-    end_date = st.sidebar.date_input("Selecione a data de término", None)
+    headers = {'Authorization': st.session_state['Authorization']}
+    resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
 
-    # Verificar se as datas foram selecionadas corretamente
-    if start_date and end_date:
-        if start_date <= end_date:
-            st.success(f'Selecionado intervalo de {start_date} a {end_date}')
-            games = [
-                {"Jogo": "Jogo 1", "Data": datetime.date.today() - datetime.timedelta(days=1)},
-                {"Jogo": "Jogo 2", "Data": datetime.date.today() - datetime.timedelta(days=3)},
-                {"Jogo": "Jogo 3", "Data": datetime.date.today() - datetime.timedelta(days=5)},
-                {"Jogo": "Jogo 4", "Data": datetime.date.today() - datetime.timedelta(days=7)},
-                {"Jogo": "Jogo 5", "Data": datetime.date.today() - datetime.timedelta(days=9)}
-            ]
-            filtered_games = [game["Jogo"] for game in games if start_date <= game["Data"] <= end_date]
-            if filtered_games:
-                st.write("Jogos dentro do intervalo selecionado:")
-                for game in filtered_games:
-                    st.write(game)
-            else:
-                st.write("Nenhum jogo disponível para o intervalo selecionado.")
-        else:
-            st.error("Erro: A data de início deve ser anterior à data de término.")
-    else:
-        st.write("Todos os jogos:")
-        headers = {'Authorization': st.session_state['Authorization']}
-        print(headers)
-        resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
-        games = resposta
-        print(games)
-        for game in games:
-            st.write(game)
+    # Carrega a resposta do servidor (substitua pelo seu caso real)
+    response_json = exemplo_json.decode('utf-8')
+
+    # Converte a resposta JSON em um dicionário
+    response_dict = eval(response_json)
+
+    # Obtém a lista de jogos
+    jogos = response_dict.get("jogos", [])
+
+    # Itera sobre os jogos e cria botões com as logos dos times
+    for jogo in jogos:
+        time_info = jogo.get("time", {})
+        time_id = list(time_info.keys())[0]
+        logo_url = time_info[time_id].get("logo", "")
+        nome_time = time_info[time_id].get("nome", "")
+
+        # Exibe o botão com a logo e o nome do time
+        if st.button(f"{nome_time} ({time_id})", key=f"button_{time_id}"):
+            # Imprime uma mensagem no terminal ao clicar no botão (substitua pelo seu código real)
+            print(f"Você clicou no botão do {nome_time}!")
 
 
 if __name__ == "__main__":
