@@ -101,7 +101,8 @@ def realizar_login(username, senha):
     headers = {'Content-Type': 'application/json'}
     resposta = requests.post('http://127.0.0.1:5000/login/verificar_login', data=dados_json, headers=headers)
     resposta_json = resposta.json()
-    st.session_state['Authorization'] = resposta_json['token']
+    if 'token' in resposta_json:
+        st.session_state['Authorization'] = resposta_json['token']
 
     return resposta_json
 
@@ -192,29 +193,18 @@ def lista_partidas():
     st.image('assets/deltagolalogo.png', width=300, use_column_width=False)
     st.title('Partidas')
 
+    # Verificar se as datas foram selecionadas corretamente
+    st.write("Todos os jogos:")
     headers = {'Authorization': st.session_state['Authorization']}
     resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
+    games = resposta.json()
+    for game in games['jogos']:
+        st.write(game)
 
-    # Carrega a resposta do servidor (substitua pelo seu caso real)
-    response_json = exemplo_json.decode('utf-8')
-
-    # Converte a resposta JSON em um dicionário
-    response_dict = eval(response_json)
-
-    # Obtém a lista de jogos
-    jogos = response_dict.get("jogos", [])
-
-    # Itera sobre os jogos e cria botões com as logos dos times
-    for jogo in jogos:
-        time_info = jogo.get("time", {})
-        time_id = list(time_info.keys())[0]
-        logo_url = time_info[time_id].get("logo", "")
-        nome_time = time_info[time_id].get("nome", "")
-
-        # Exibe o botão com a logo e o nome do time
-        if st.button(f"{nome_time} ({time_id})", key=f"button_{time_id}"):
-            # Imprime uma mensagem no terminal ao clicar no botão (substitua pelo seu código real)
-            print(f"Você clicou no botão do {nome_time}!")
+    # # Exibe o botão com a logo e o nome do time
+    # if st.button(f"{nome_time} ({time_id})", key=f"button_{time_id}"):
+    #     # Imprime uma mensagem no terminal ao clicar no botão (substitua pelo seu código real)
+    #     print(f"Você clicou no botão do {nome_time}!")
 
 
 if __name__ == "__main__":
