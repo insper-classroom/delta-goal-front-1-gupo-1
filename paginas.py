@@ -35,6 +35,8 @@ def main():
         troca_senha()
     elif st.session_state['pagina'] == "lista_partidas":
        lista_partidas()
+    elif st.session_state['pagina'] == "dashboard":
+        dashboard()
 
 # Pagina de Login
 def login():
@@ -183,9 +185,6 @@ def troca_senha():
              
                 st.success(resposta_senha_json['mensagem'])
 
-import streamlit as st
-import requests
-
 def lista_partidas():
 # Centralizar a imagem e o título
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
@@ -250,18 +249,46 @@ def lista_partidas():
 
                 # Adicione a caixa com a logo e o nome do time da casa
                 with col1:
-                    st.image("assets/palmeiras.png", width=100, use_column_width=False, caption=game_info['time']['1']['nome'])
+                    st.image("assets/palmeiras.png", width=150, use_column_width=False, caption=game_info['time']['1']['nome'])
                     st.write("Time da Casa")
 
                 # Adicione a caixa com a logo e o nome do time visitante
                 with col3:
-                    st.image("assets/RedBullBragantino.png", width=100, use_column_width=False, caption=game_info['time']['5']['nome'])
+                    st.image("assets/RedBullBragantino.png", width=150, use_column_width=False, caption=game_info['time']['5']['nome'])
                     st.write("Time Visitante")
 
                 # Adicione o botão de estatísticas
                 if st.button(f"Estatísticas"):
+                    st.session_state['pagina'] = "dashboard"
+                    st.rerun()
                     # Lógica para redirecionar para a tela de estatísticas do jogo
                     st.write(f"Redirecionando para estatísticas do jogo {game_info['_id']}")
+
+def dashboard():
+# Centralizar a imagem e o título
+    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
+
+    st.markdown(
+        """
+        <div style='text-align: center;'>
+            <h1>Dashboard</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+#sidebar para filtros (ficticio)
+    st.sidebar.title("Análises:")
+    if st.sidebar.button("Cruzamentos"):
+        st.title('Cruzamento')
+
+    if st.sidebar.button("Quebra de Linhas"):
+        st.title('Quebra')
+
+    st.sidebar.markdown("---")
+    if st.sidebar.button(f"Voltar"):
+        st.session_state['pagina'] = "lista_partidas"
+        st.rerun()
     
     
 if __name__ == "__main__":
