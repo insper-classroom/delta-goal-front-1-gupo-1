@@ -187,8 +187,8 @@ import streamlit as st
 import requests
 
 def lista_partidas():
-  # Centralizar a imagem e o título
-    st.image('assets/deltagolalogo.png', width=250, use_column_width=False)
+# Centralizar a imagem e o título
+    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
 
     st.markdown(
         """
@@ -199,31 +199,69 @@ def lista_partidas():
         unsafe_allow_html=True
     )
 
-    headers = {'Authorization': st.session_state['Authorization']}
-    resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
-    games = resposta.json()
-    for index, game_info in enumerate(games['jogos']):
-        # Adicione a caixa de fundo para o jogo
-        jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
-        
-        # Adicione a caixa com a logo e o nome do time da casa
-        with jogo_box:
-            col1, col2, col3 = st.columns([1, 3, 1])
+#sidebar para filtros (ficticio)
+    st.sidebar.title("Filtros:")
+    st.sidebar.button("Liga Nacional")
+    st.sidebar.button("Copa Nacional")
+    st.sidebar.button("Copa Internacional")
+    st.sidebar.button("Estadual ou Pré-Temporada")
+    st.sidebar.button("Outros")
 
+    start_date = st.sidebar.date_input("Selecione a data de início", None)
+    end_date = st.sidebar.date_input("Selecione a data de término", None)
+
+    if start_date and end_date:
+        if start_date <= end_date:
+            st.success(f'Selecionado intervalo de {start_date} a {end_date}')
+            games = [
+                {"Jogo": "Palmeiras X São Paulo", "Data": datetime.date.today() - datetime.timedelta(days=1),
+                 "Detalhes": "Detalhes do jogo Palmeiras X São Paulo"},
+                {"Jogo": "Palmeiras x Corinthians", "Data": datetime.date.today() - datetime.timedelta(days=3),
+                 "Detalhes": "Detalhes do jogo Palmeiras x Corinthians"},
+                {"Jogo": "Santos X Palmeiras", "Data": datetime.date.today() - datetime.timedelta(days=5),
+                 "Detalhes": "Detalhes do jogo Santos X Palmeiras"},
+                {"Jogo": "Coritiba X Palmeiras", "Data": datetime.date.today() - datetime.timedelta(days=7),
+                 "Detalhes": "Detalhes do jogo Coritiba X Palmeiras"},
+                {"Jogo": "Palmeiras X Goias", "Data": datetime.date.today() - datetime.timedelta(days=9),
+                 "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
+            ]
+
+            filtered_games = [game for game in games if start_date <= game["Data"] <= end_date]
+            if filtered_games:
+                st.write("Jogos dentro do intervalo selecionado:")
+                for game in filtered_games:
+                    expander = st.expander(game["Jogo"])
+                    with expander:
+                        st.write(game["Detalhes"])
+        else:
+            st.error("Erro: A data de início deve ser anterior à data de término.")
+    else:
+        headers = {'Authorization': st.session_state['Authorization']}
+        resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
+        games = resposta.json()
+
+        for index, game_info in enumerate(games['jogos']):
+            # Adicione a caixa de fundo para o jogo
+            jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
+            
             # Adicione a caixa com a logo e o nome do time da casa
-            with col1:
-                st.image("assets/palmeiras.png", width=100, use_column_width=False, caption=game_info['time']['1']['nome'])
-                st.write("Time da Casa")
+            with jogo_box:
+                col1, col2, col3 = st.columns([1, 3, 1])
 
-            # Adicione a caixa com a logo e o nome do time visitante
-            with col3:
-                st.image("assets/RedBullBragantino.png", width=100, use_column_width=False, caption=game_info['time']['5']['nome'])
-                st.write("Time Visitante")
+                # Adicione a caixa com a logo e o nome do time da casa
+                with col1:
+                    st.image("assets/palmeiras.png", width=100, use_column_width=False, caption=game_info['time']['1']['nome'])
+                    st.write("Time da Casa")
 
-            # Adicione o botão de estatísticas
-            if st.button(f"Estatísticas"):
-                # Lógica para redirecionar para a tela de estatísticas do jogo
-                st.write(f"Redirecionando para estatísticas do jogo {game_info['_id']}")
+                # Adicione a caixa com a logo e o nome do time visitante
+                with col3:
+                    st.image("assets/RedBullBragantino.png", width=100, use_column_width=False, caption=game_info['time']['5']['nome'])
+                    st.write("Time Visitante")
+
+                # Adicione o botão de estatísticas
+                if st.button(f"Estatísticas"):
+                    # Lógica para redirecionar para a tela de estatísticas do jogo
+                    st.write(f"Redirecionando para estatísticas do jogo {game_info['_id']}")
     
     
 if __name__ == "__main__":
