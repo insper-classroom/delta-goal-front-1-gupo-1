@@ -183,50 +183,48 @@ def troca_senha():
              
                 st.success(resposta_senha_json['mensagem'])
 
+import streamlit as st
+import requests
 
 def lista_partidas():
-    st.sidebar.title("Aba de Opções")
-    st.sidebar.image('assets/deltagolalogo.png', width=100)
-    st.sidebar.write("Opção 1")
-    st.sidebar.write("Opção 2")
-    st.sidebar.write("Opção 3")
-    st.sidebar.write("Opção 4")
-    st.sidebar.write("Opção 5")
+  # Centralizar a imagem e o título
+    st.image('assets/deltagolalogo.png', width=250, use_column_width=False)
 
-    st.title('Partidas')
+    st.markdown(
+        """
+        <div style='text-align: center;'>
+            <h1>Partidas</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    # Seleção de intervalo de tempo entre duas datas (opcional)
-    start_date = st.sidebar.date_input("Selecione a data de início", None)
-    end_date = st.sidebar.date_input("Selecione a data de término", None)
+    headers = {'Authorization': st.session_state['Authorization']}
+    resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
+    games = resposta.json()
+    for index, game_info in enumerate(games['jogos']):
+        # Adicione a caixa de fundo para o jogo
+        jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
+        
+        # Adicione a caixa com a logo e o nome do time da casa
+        with jogo_box:
+            col1, col2, col3 = st.columns([1, 3, 1])
 
-    # Verificar se as datas foram selecionadas corretamente
-    if start_date and end_date:
-        if start_date <= end_date:
-            st.success(f'Selecionado intervalo de {start_date} a {end_date}')
-            games = [
-                {"Jogo": "Jogo 1", "Data": datetime.date.today() - datetime.timedelta(days=1)},
-                {"Jogo": "Jogo 2", "Data": datetime.date.today() - datetime.timedelta(days=3)},
-                {"Jogo": "Jogo 3", "Data": datetime.date.today() - datetime.timedelta(days=5)},
-                {"Jogo": "Jogo 4", "Data": datetime.date.today() - datetime.timedelta(days=7)},
-                {"Jogo": "Jogo 5", "Data": datetime.date.today() - datetime.timedelta(days=9)}
-            ]
-            filtered_games = [game["Jogo"] for game in games if start_date <= game["Data"] <= end_date]
-            if filtered_games:
-                st.write("Jogos dentro do intervalo selecionado:")
-                for game in filtered_games:
-                    st.write(game)
-            else:
-                st.write("Nenhum jogo disponível para o intervalo selecionado.")
-        else:
-            st.error("Erro: A data de início deve ser anterior à data de término.")
-    else:
-        st.write("Todos os jogos:")
-        headers = {'Authorization': st.session_state['Authorization']}
-        resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
-        games = resposta.json()
-        for game in games['jogos']:
-            st.write(game)
+            # Adicione a caixa com a logo e o nome do time da casa
+            with col1:
+                st.image("assets/palmeiras.png", width=100, use_column_width=False, caption=game_info['time']['1']['nome'])
+                st.write("Time da Casa")
 
+            # Adicione a caixa com a logo e o nome do time visitante
+            with col3:
+                st.image("assets/RedBullBragantino.png", width=100, use_column_width=False, caption=game_info['time']['5']['nome'])
+                st.write("Time Visitante")
 
+            # Adicione o botão de estatísticas
+            if st.button(f"Estatísticas"):
+                # Lógica para redirecionar para a tela de estatísticas do jogo
+                st.write(f"Redirecionando para estatísticas do jogo {game_info['_id']}")
+    
+    
 if __name__ == "__main__":
     main()
