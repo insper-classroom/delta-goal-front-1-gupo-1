@@ -186,26 +186,45 @@ def troca_senha():
 import streamlit as st
 import requests
 
-# Exemplo de resposta do servidor (substitua isso pelo seu JSON real)
-exemplo_json = b'{"jogos": [{"time": {"1": {"logo": "https://api.deltagoal.ai/1/logo.png", "nome": "Time A"}}, "id": "6563850a8388630a37533967"}]}'
-
 def lista_partidas():
-    st.image('assets/deltagolalogo.png', width=300, use_column_width=False)
-    st.title('Partidas')
+  # Centralizar a imagem e o título
+    st.image('assets/deltagolalogo.png', width=250, use_column_width=False)
 
-    # Verificar se as datas foram selecionadas corretamente
-    st.write("Todos os jogos:")
+    st.markdown(
+        """
+        <div style='text-align: center;'>
+            <h1>Partidas</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     headers = {'Authorization': st.session_state['Authorization']}
     resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
     games = resposta.json()
-    for game in games['jogos']:
-        st.write(game)
+    for index, game_info in enumerate(games['jogos']):
+        # Adicione a caixa de fundo para o jogo
+        jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
+        
+        # Adicione a caixa com a logo e o nome do time da casa
+        with jogo_box:
+            col1, col2, col3 = st.columns([1, 3, 1])
 
-    # # Exibe o botão com a logo e o nome do time
-    # if st.button(f"{nome_time} ({time_id})", key=f"button_{time_id}"):
-    #     # Imprime uma mensagem no terminal ao clicar no botão (substitua pelo seu código real)
-    #     print(f"Você clicou no botão do {nome_time}!")
+            # Adicione a caixa com a logo e o nome do time da casa
+            with col1:
+                st.image("assets/palmeiras.png", width=100, use_column_width=False, caption=game_info['time']['1']['nome'])
+                st.write("Time da Casa")
 
+            # Adicione a caixa com a logo e o nome do time visitante
+            with col3:
+                st.image("assets/RedBullBragantino.png", width=100, use_column_width=False, caption=game_info['time']['5']['nome'])
+                st.write("Time Visitante")
 
+            # Adicione o botão de estatísticas
+            if st.button(f"Estatísticas"):
+                # Lógica para redirecionar para a tela de estatísticas do jogo
+                st.write(f"Redirecionando para estatísticas do jogo {game_info['_id']}")
+    
+    
 if __name__ == "__main__":
     main()
