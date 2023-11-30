@@ -1,12 +1,35 @@
 import streamlit as st
 import requests
 import json
-import datetime
+from datetime import datetime, timedelta
+import extra_streamlit_components as stx
+
+
+#Configuração dos Cookies utilizando a bilbioteca stx
+def get_manager():
+    return stx.CookieManager()
+cookie_manager = get_manager()
+
+all_cookies = cookie_manager.get_all()
+try:
+    #No logout por algum motivo após deslogar não podemos logar de novo. Ainda falta corrigir isso. Até la, deem refresh após deslogar para logar denovo
+    if 'logout' in st.session_state:
+        cookie_manager.delete('Authorization')
+
+    elif 'Authorization' not in all_cookies:
+        cookie_manager.set('Authorization', st.session_state['Authorization'], expires_at=datetime.utcnow() + timedelta(hours=3))
+    else:
+        st.session_state['Authorization'] = all_cookies['Authorization']
+except:
+    pass
+
 
 # Esta variavel controlara nosso fluxo de telas
 # na Funcao main organizamos qual pagina precisa ser mostrada
-if 'pagina' not in st.session_state:
+if 'pagina' not in st.session_state or 'Authorization' not in all_cookies:
     st.session_state['pagina'] = 'login'
+elif 'Authorization' in all_cookies:
+    st.session_state['pagina'] = 'lista_partidas'
 
 # Variavel para controle da interface de redefinir a senha
 if 'resposta_troca_senha' not in st.session_state:
@@ -108,6 +131,13 @@ def realizar_login(username, senha):
 
     return resposta_json
 
+#Função auxiliar que realiza o logout
+def realiza_logout():
+    headers = {'Authorization': st.session_state['Authorization']}
+    resposta = requests.get('http://127.0.0.1:5000/logout', headers=headers)
+    st.session_state['logout'] = resposta.json()['logout']
+    st.rerun()
+
 
 
 # Pagina Troca de Senha
@@ -200,7 +230,12 @@ def lista_partidas():
 
 #sidebar para filtros (ficticio)
     st.sidebar.title("Filtros:")
-    st.sidebar.button("Liga Nacional")
+
+
+    #Temporariamente para testes neste botao, mas deve ganhar seu próprio depois
+    if st.sidebar.button("Liga Nacional"):
+        realiza_logout()
+
     st.sidebar.button("Copa Nacional")
     st.sidebar.button("Copa Internacional")
     st.sidebar.button("Estadual ou Pré-Temporada")
