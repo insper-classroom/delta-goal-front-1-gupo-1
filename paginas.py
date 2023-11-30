@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import extra_streamlit_components as stx
 
 
@@ -247,15 +247,15 @@ def lista_partidas():
         if start_date <= end_date:
             st.success(f'Selecionado intervalo de {start_date} a {end_date}')
             games = [
-                {"Jogo": "Palmeiras X São Paulo", "Data": datetime.date.today() - datetime.timedelta(days=1),
+                {"Jogo": "Palmeiras X São Paulo", "Data": date.today() - timedelta(days=1),
                  "Detalhes": "Detalhes do jogo Palmeiras X São Paulo"},
-                {"Jogo": "Palmeiras x Corinthians", "Data": datetime.date.today() - datetime.timedelta(days=3),
+                {"Jogo": "Palmeiras x Corinthians", "Data": date.today() - timedelta(days=3),
                  "Detalhes": "Detalhes do jogo Palmeiras x Corinthians"},
-                {"Jogo": "Santos X Palmeiras", "Data": datetime.date.today() - datetime.timedelta(days=5),
+                {"Jogo": "Santos X Palmeiras", "Data": date.today() - timedelta(days=5),
                  "Detalhes": "Detalhes do jogo Santos X Palmeiras"},
-                {"Jogo": "Coritiba X Palmeiras", "Data": datetime.date.today() - datetime.timedelta(days=7),
+                {"Jogo": "Coritiba X Palmeiras", "Data": date.today() - timedelta(days=7),
                  "Detalhes": "Detalhes do jogo Coritiba X Palmeiras"},
-                {"Jogo": "Palmeiras X Goias", "Data": datetime.date.today() - datetime.timedelta(days=9),
+                {"Jogo": "Palmeiras X Goias", "Data": date.today() - timedelta(days=9),
                  "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
             ]
 
