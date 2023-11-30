@@ -28,7 +28,7 @@ except:
 # na Funcao main organizamos qual pagina precisa ser mostrada
 if 'pagina' not in st.session_state or 'Authorization' not in all_cookies:
     st.session_state['pagina'] = 'login'
-elif 'Authorization' in all_cookies:
+elif 'Authorization' in all_cookies and st.session_state['pagina'] == 'login':
     st.session_state['pagina'] = 'lista_partidas'
 
 # Variavel para controle da interface de redefinir a senha
@@ -230,12 +230,7 @@ def lista_partidas():
 
 #sidebar para filtros (ficticio)
     st.sidebar.title("Filtros:")
-
-
-    #Temporariamente para testes neste botao, mas deve ganhar seu próprio depois
-    if st.sidebar.button("Liga Nacional"):
-        realiza_logout()
-
+    st.sidebar.button("Liga Nacional")
     st.sidebar.button("Copa Nacional")
     st.sidebar.button("Copa Internacional")
     st.sidebar.button("Estadual ou Pré-Temporada")
@@ -243,6 +238,10 @@ def lista_partidas():
 
     start_date = st.sidebar.date_input("Selecione a data de início", None)
     end_date = st.sidebar.date_input("Selecione a data de término", None)
+
+    st.sidebar.markdown("---")
+    if st.sidebar.button("Logout"):
+        realiza_logout()
 
     if start_date and end_date:
         if start_date <= end_date:
@@ -289,15 +288,14 @@ def lista_partidas():
 
                 # Adicione a caixa com a logo e o nome do time visitante
                 with col3:
-                    st.image("assets/RedBullBragantino.png", width=150, use_column_width=False, caption=game_info['time']['5']['nome'])
+                    st.image("assets/RedBullBragantino.png", width=120, use_column_width=False, caption=game_info['time']['5']['nome'])
                     st.write("Time Visitante")
 
                 # Adicione o botão de estatísticas
-                if st.button(f"Estatísticas"):
+                if st.button("Estatísticas"):
                     st.session_state['pagina'] = "dashboard"
                     st.rerun()
-                    # Lógica para redirecionar para a tela de estatísticas do jogo
-                    st.write(f"Redirecionando para estatísticas do jogo {game_info['_id']}")
+
 
 def dashboard():
 # Centralizar a imagem e o título
@@ -321,9 +319,11 @@ def dashboard():
         st.title('Quebra')
 
     st.sidebar.markdown("---")
-    if st.sidebar.button(f"Voltar"):
+    if st.sidebar.button("Voltar"):
         st.session_state['pagina'] = "lista_partidas"
         st.rerun()
+    if st.sidebar.button("Logout"):
+        realiza_logout()
     
     
 if __name__ == "__main__":
