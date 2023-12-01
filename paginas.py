@@ -35,18 +35,80 @@ elif 'Authorization' in all_cookies and st.session_state['pagina'] == 'login':
 if 'resposta_troca_senha' not in st.session_state:
     st.session_state['resposta_troca_senha'] = False
 
-
 st.markdown(
     """
     <style>
-    .st-emotion-cache-1pxazr7 {
-        display:none
-    }
-    .st-emotion-cache-6awftf:active, .st-emotion-cache-6awftf:focus-visible, .st-emotion-cache-6awftf:hover {
-    display:none
-    }
-    </style>"""
-    , unsafe_allow_html=True
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .logo {
+            max-width: 80%;  /* Alterado para 80% */
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        h1 {
+            color: #000000;  /* Alterado para preto (#000000) */
+            text-align: center;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+                .sidebar {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+            text-align: center;  /* Adicionado para centralizar conteúdo */
+        }
+        .sidebar-button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .button-primary {
+            background-color: #007BFF;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .button-secondary {
+            background-color: #6c757d;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .button-logout {
+            background-color: #dc3545;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .expander {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
 )
 
 # Main
@@ -230,10 +292,10 @@ def lista_partidas():
 
 #sidebar para filtros (ficticio)
     st.sidebar.title("Filtros:")
-    st.sidebar.button("Liga Nacional")
+    st.sidebar.button("   Liga Nacional  ")
     st.sidebar.button("Copa Nacional")
     st.sidebar.button("Copa Internacional")
-    st.sidebar.button("Estadual ou Pré-Temporada")
+    st.sidebar.button("Estadual")
     st.sidebar.button("Outros")
 
     start_date = st.sidebar.date_input("Selecione a data de início", None)
@@ -283,7 +345,7 @@ def lista_partidas():
 
                 # Adicione a caixa com a logo e o nome do time da casa
                 with col1:
-                    st.image("assets/palmeiras.png", width=150, use_column_width=False, caption=game_info['time']['1']['nome'])
+                    st.image("assets/palmeiras.png", width=120, use_column_width=False, caption=game_info['time']['1']['nome'])
                     st.write("Time da Casa")
 
                 # Adicione a caixa com a logo e o nome do time visitante
