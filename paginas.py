@@ -292,7 +292,7 @@ def lista_partidas():
 
 #sidebar para filtros (ficticio)
     st.sidebar.title("Filtros:")
-    st.sidebar.button("   Liga Nacional  ")
+    st.sidebar.button("Liga Nacional")
     st.sidebar.button("Copa Nacional")
     st.sidebar.button("Copa Internacional")
     st.sidebar.button("Estadual")
@@ -309,15 +309,15 @@ def lista_partidas():
         if start_date <= end_date:
             st.success(f'Selecionado intervalo de {start_date} a {end_date}')
             games = [
-                {"Jogo": "Palmeiras X São Paulo", "Data": date.today() - timedelta(days=1),
+                {"Jogo": "Palmeiras X São Paulo", "Data": date.today() + timedelta(days=1),
                  "Detalhes": "Detalhes do jogo Palmeiras X São Paulo"},
-                {"Jogo": "Palmeiras x Corinthians", "Data": date.today() - timedelta(days=3),
+                {"Jogo": "Palmeiras x Corinthians", "Data": date.today() + timedelta(days=3),
                  "Detalhes": "Detalhes do jogo Palmeiras x Corinthians"},
-                {"Jogo": "Santos X Palmeiras", "Data": date.today() - timedelta(days=5),
+                {"Jogo": "Santos X Palmeiras", "Data": date.today() + timedelta(days=5),
                  "Detalhes": "Detalhes do jogo Santos X Palmeiras"},
-                {"Jogo": "Coritiba X Palmeiras", "Data": date.today() - timedelta(days=7),
+                {"Jogo": "Coritiba X Palmeiras", "Data": date.today() + timedelta(days=7),
                  "Detalhes": "Detalhes do jogo Coritiba X Palmeiras"},
-                {"Jogo": "Palmeiras X Goias", "Data": date.today() - timedelta(days=9),
+                {"Jogo": "Palmeiras X Goias", "Data": date.today() + timedelta(days=9),
                  "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
             ]
 
@@ -331,10 +331,28 @@ def lista_partidas():
         else:
             st.error("Erro: A data de início deve ser anterior à data de término.")
     else:
+        games = [
+            {"Jogo": "Palmeiras X São Paulo", "Data": date.today() + timedelta(days=1),
+             "Detalhes": "Detalhes do jogo Palmeiras X São Paulo"},
+            {"Jogo": "Palmeiras x Corinthians", "Data": date.today() + timedelta(days=3),
+             "Detalhes": "Detalhes do jogo Palmeiras x Corinthians"},
+            {"Jogo": "Santos X Palmeiras", "Data": date.today() + timedelta(days=5),
+             "Detalhes": "Detalhes do jogo Santos X Palmeiras"},
+            {"Jogo": "Coritiba X Palmeiras", "Data": date.today() + timedelta(days=7),
+             "Detalhes": "Detalhes do jogo Coritiba X Palmeiras"},
+            {"Jogo": "Palmeiras X Goias", "Data": date.today() + timedelta(days=9),
+             "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
+        ]
+        
+        for game in games:
+            expander = st.expander(game["Jogo"])
+            with expander:
+                st.write(game["Detalhes"])
+
         headers = {'Authorization': st.session_state['Authorization']}
         resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
         games = resposta.json()
-
+        
         for index, game_info in enumerate(games['jogos']):
             # Adicione a caixa de fundo para o jogo
             jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
