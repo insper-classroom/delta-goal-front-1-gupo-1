@@ -64,14 +64,11 @@ st.markdown(
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-                .sidebar {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 20px;
-            text-align: center;  /* Adicionado para centralizar conteúdo */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
         .sidebar-button {
             width: 100%;
@@ -291,11 +288,25 @@ def lista_partidas():
     )
 
 #sidebar para filtros (ficticio)
-    st.sidebar.title("Filtros:")
+    st.sidebar.markdown(
+    """
+    <style>
+        .sidebar .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Adiciona cabeçalho centralizado e botões centralizados na barra lateral
+    st.sidebar.header("Filtros:")
     st.sidebar.button("Liga Nacional")
     st.sidebar.button("Copa Nacional")
     st.sidebar.button("Copa Internacional")
-    st.sidebar.button("Estadual")
+    st.sidebar.button("Pré Temporada")
     st.sidebar.button("Outros")
 
     start_date = st.sidebar.date_input("Selecione a data de início", None)
@@ -304,7 +315,6 @@ def lista_partidas():
     st.sidebar.markdown("---")
     if st.sidebar.button("Logout"):
         realiza_logout()
-
     if start_date and end_date:
         if start_date <= end_date:
             st.success(f'Selecionado intervalo de {start_date} a {end_date}')
@@ -391,12 +401,12 @@ def dashboard():
     )
 
 #sidebar para filtros (ficticio)
-    st.sidebar.title("Análises:")
+    st.sidebar.header("Análises:")
     if st.sidebar.button("Cruzamentos"):
-        st.title('Cruzamento')
+        st.header('Cruzamento')
 
     if st.sidebar.button("Quebra de Linhas"):
-        st.title('Quebra')
+        st.header('Quebra')
 
     st.sidebar.markdown("---")
     if st.sidebar.button("Voltar"):
