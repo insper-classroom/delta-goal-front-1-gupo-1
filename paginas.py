@@ -2,31 +2,117 @@ import streamlit as st
 import streamlit.components.v1 as components
 import requests
 import json
+<<<<<<< HEAD
 import datetime
 from moviepy.editor import VideoFileClip
 from io import BytesIO
+=======
+from datetime import datetime, timedelta, date
+import extra_streamlit_components as stx
+
+
+#Configuração dos Cookies utilizando a bilbioteca stx
+def get_manager():
+    return stx.CookieManager()
+cookie_manager = get_manager()
+
+all_cookies = cookie_manager.get_all()
+try:
+    #No logout por algum motivo após deslogar não podemos logar de novo. Ainda falta corrigir isso. Até la, deem refresh após deslogar para logar denovo
+    if 'logout' in st.session_state:
+        cookie_manager.delete('Authorization')
+
+    elif 'Authorization' not in all_cookies:
+        cookie_manager.set('Authorization', st.session_state['Authorization'], expires_at=datetime.utcnow() + timedelta(hours=3))
+    else:
+        st.session_state['Authorization'] = all_cookies['Authorization']
+except:
+    pass
+
+>>>>>>> 73bef46a6a57881c7c305e9fb2c65f8af5e7191b
 
 # Esta variavel controlara nosso fluxo de telas
 # na Funcao main organizamos qual pagina precisa ser mostrada
-if 'pagina' not in st.session_state:
+if 'pagina' not in st.session_state or 'Authorization' not in all_cookies:
     st.session_state['pagina'] = 'login'
+elif 'Authorization' in all_cookies and st.session_state['pagina'] == 'login':
+    st.session_state['pagina'] = 'lista_partidas'
 
 # Variavel para controle da interface de redefinir a senha
 if 'resposta_troca_senha' not in st.session_state:
     st.session_state['resposta_troca_senha'] = False
 
-
 st.markdown(
     """
     <style>
-    .st-emotion-cache-1pxazr7 {
-        display:none
-    }
-    .st-emotion-cache-6awftf:active, .st-emotion-cache-6awftf:focus-visible, .st-emotion-cache-6awftf:hover {
-    display:none
-    }
-    </style>"""
-    , unsafe_allow_html=True
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .logo {
+            max-width: 80%;  /* Alterado para 80% */
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        h1 {
+            color: #000000;  /* Alterado para preto (#000000) */
+            text-align: center;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .sidebar-button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .button-primary {
+            background-color: #007BFF;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .button-secondary {
+            background-color: #6c757d;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .button-logout {
+            background-color: #dc3545;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .expander {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
 )
 
 # Main
@@ -40,7 +126,10 @@ def main():
        lista_partidas()
     elif st.session_state['pagina'] == "dashboard":
         dashboard()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 73bef46a6a57881c7c305e9fb2c65f8af5e7191b
 
 # Pagina de Login
 def login():
@@ -111,6 +200,13 @@ def realizar_login(username, senha):
         st.session_state['Authorization'] = resposta_json['token']
 
     return resposta_json
+
+#Função auxiliar que realiza o logout
+def realiza_logout():
+    headers = {'Authorization': st.session_state['Authorization']}
+    resposta = requests.get('http://127.0.0.1:5000/logout', headers=headers)
+    st.session_state['logout'] = resposta.json()['logout']
+    st.rerun()
 
 
 
@@ -189,49 +285,117 @@ def troca_senha():
              
                 st.success(resposta_senha_json['mensagem'])
 
-
 def lista_partidas():
-    st.sidebar.title("Aba de Opções")
-    st.sidebar.image('assets/deltagolalogo.png', width=100)
-    st.sidebar.write("Opção 1")
-    st.sidebar.write("Opção 2")
-    st.sidebar.write("Opção 3")
-    st.sidebar.write("Opção 4")
-    st.sidebar.write("Opção 5")
+# Centralizar a imagem e o título
+    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
 
-    st.title('Partidas')
+    st.markdown(
+        """
+        <div style='text-align: center;'>
+            <h1>Partidas</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    # Seleção de intervalo de tempo entre duas datas (opcional)
+#sidebar para filtros (ficticio)
+    st.sidebar.markdown(
+    """
+    <style>
+        .sidebar .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Adiciona cabeçalho centralizado e botões centralizados na barra lateral
+    st.sidebar.header("Filtros:")
+    st.sidebar.button("Liga Nacional")
+    st.sidebar.button("Copa Nacional")
+    st.sidebar.button("Copa Internacional")
+    st.sidebar.button("Pré Temporada")
+    st.sidebar.button("Outros")
+
     start_date = st.sidebar.date_input("Selecione a data de início", None)
     end_date = st.sidebar.date_input("Selecione a data de término", None)
 
-    # Verificar se as datas foram selecionadas corretamente
+    st.sidebar.markdown("---")
+    if st.sidebar.button("Logout"):
+        realiza_logout()
     if start_date and end_date:
         if start_date <= end_date:
             st.success(f'Selecionado intervalo de {start_date} a {end_date}')
             games = [
-                {"Jogo": "Jogo 1", "Data": datetime.date.today() - datetime.timedelta(days=1)},
-                {"Jogo": "Jogo 2", "Data": datetime.date.today() - datetime.timedelta(days=3)},
-                {"Jogo": "Jogo 3", "Data": datetime.date.today() - datetime.timedelta(days=5)},
-                {"Jogo": "Jogo 4", "Data": datetime.date.today() - datetime.timedelta(days=7)},
-                {"Jogo": "Jogo 5", "Data": datetime.date.today() - datetime.timedelta(days=9)}
+                {"Jogo": "Palmeiras X São Paulo", "Data": date.today() + timedelta(days=1),
+                 "Detalhes": "Detalhes do jogo Palmeiras X São Paulo"},
+                {"Jogo": "Palmeiras x Corinthians", "Data": date.today() + timedelta(days=3),
+                 "Detalhes": "Detalhes do jogo Palmeiras x Corinthians"},
+                {"Jogo": "Santos X Palmeiras", "Data": date.today() + timedelta(days=5),
+                 "Detalhes": "Detalhes do jogo Santos X Palmeiras"},
+                {"Jogo": "Coritiba X Palmeiras", "Data": date.today() + timedelta(days=7),
+                 "Detalhes": "Detalhes do jogo Coritiba X Palmeiras"},
+                {"Jogo": "Palmeiras X Goias", "Data": date.today() + timedelta(days=9),
+                 "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
             ]
-            filtered_games = [game["Jogo"] for game in games if start_date <= game["Data"] <= end_date]
+
+            filtered_games = [game for game in games if start_date <= game["Data"] <= end_date]
             if filtered_games:
                 st.write("Jogos dentro do intervalo selecionado:")
                 for game in filtered_games:
-                    st.write(game)
-            else:
-                st.write("Nenhum jogo disponível para o intervalo selecionado.")
+                    expander = st.expander(game["Jogo"])
+                    with expander:
+                        st.write(game["Detalhes"])
         else:
             st.error("Erro: A data de início deve ser anterior à data de término.")
     else:
-        st.write("Todos os jogos:")
+        games = [
+            {"Jogo": "Palmeiras X São Paulo", "Data": date.today() + timedelta(days=1),
+             "Detalhes": "Detalhes do jogo Palmeiras X São Paulo"},
+            {"Jogo": "Palmeiras x Corinthians", "Data": date.today() + timedelta(days=3),
+             "Detalhes": "Detalhes do jogo Palmeiras x Corinthians"},
+            {"Jogo": "Santos X Palmeiras", "Data": date.today() + timedelta(days=5),
+             "Detalhes": "Detalhes do jogo Santos X Palmeiras"},
+            {"Jogo": "Coritiba X Palmeiras", "Data": date.today() + timedelta(days=7),
+             "Detalhes": "Detalhes do jogo Coritiba X Palmeiras"},
+            {"Jogo": "Palmeiras X Goias", "Data": date.today() + timedelta(days=9),
+             "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
+        ]
+        
+        for game in games:
+            expander = st.expander(game["Jogo"])
+            with expander:
+                st.write(game["Detalhes"])
+
         headers = {'Authorization': st.session_state['Authorization']}
         resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
         games = resposta.json()
-        for game in games['jogos']:
-            st.write(game)
+        
+        for index, game_info in enumerate(games['jogos']):
+            # Adicione a caixa de fundo para o jogo
+            jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
+            
+            # Adicione a caixa com a logo e o nome do time da casa
+            with jogo_box:
+                col1, col2, col3 = st.columns([1, 3, 1])
+
+                # Adicione a caixa com a logo e o nome do time da casa
+                with col1:
+                    st.image("assets/palmeiras.png", width=120, use_column_width=False, caption=game_info['time']['1']['nome'])
+                    st.write("Time da Casa")
+
+                # Adicione a caixa com a logo e o nome do time visitante
+                with col3:
+                    st.image("assets/RedBullBragantino.png", width=120, use_column_width=False, caption=game_info['time']['5']['nome'])
+                    st.write("Time Visitante")
+
+                # Adicione o botão de estatísticas
+                if st.button("Estatísticas"):
+                    st.session_state['pagina'] = "dashboard"
+                    st.rerun()
 
 def dashboard():
     st.title('Clipe de Vídeo Incorporado')
@@ -241,5 +405,34 @@ def dashboard():
         st.markdown(embed_code, unsafe_allow_html=True)
 
 
+def dashboard():
+# Centralizar a imagem e o título
+    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
+
+    st.markdown(
+        """
+        <div style='text-align: center;'>
+            <h1>Dashboard</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+#sidebar para filtros (ficticio)
+    st.sidebar.header("Análises:")
+    if st.sidebar.button("Cruzamentos"):
+        st.header('Cruzamento')
+
+    if st.sidebar.button("Quebra de Linhas"):
+        st.header('Quebra')
+
+    st.sidebar.markdown("---")
+    if st.sidebar.button("Voltar"):
+        st.session_state['pagina'] = "lista_partidas"
+        st.rerun()
+    if st.sidebar.button("Logout"):
+        realiza_logout()
+    
+    
 if __name__ == "__main__":
     main()
