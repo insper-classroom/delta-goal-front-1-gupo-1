@@ -1,7 +1,10 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import requests
 import json
 import datetime
+from moviepy.editor import VideoFileClip
+from io import BytesIO
 
 # Esta variavel controlara nosso fluxo de telas
 # na Funcao main organizamos qual pagina precisa ser mostrada
@@ -35,6 +38,9 @@ def main():
         troca_senha()
     elif st.session_state['pagina'] == "lista_partidas":
        lista_partidas()
+    elif st.session_state['pagina'] == "dashboard":
+        dashboard()
+
 
 # Pagina de Login
 def login():
@@ -77,7 +83,7 @@ unsafe_allow_html=True
             dados_existentes = True
             dados = realizar_login(username, senha)
             if dados['erro'] == False:
-                st.session_state['pagina'] = "lista_partidas" 
+                st.session_state['pagina'] = "dashboard" 
                 st.rerun()
 
         if st.button("Esqueci a Senha"):
@@ -226,6 +232,13 @@ def lista_partidas():
         games = resposta.json()
         for game in games['jogos']:
             st.write(game)
+
+def dashboard():
+    st.title('Clipe de Vídeo Incorporado')
+
+    
+        # Exibir o código de incorporação
+        st.markdown(embed_code, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
