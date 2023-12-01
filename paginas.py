@@ -2,11 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import requests
 import json
-<<<<<<< HEAD
-import datetime
-from moviepy.editor import VideoFileClip
-from io import BytesIO
-=======
 from datetime import datetime, timedelta, date
 import extra_streamlit_components as stx
 
@@ -29,7 +24,6 @@ try:
 except:
     pass
 
->>>>>>> 73bef46a6a57881c7c305e9fb2c65f8af5e7191b
 
 # Esta variavel controlara nosso fluxo de telas
 # na Funcao main organizamos qual pagina precisa ser mostrada
@@ -126,10 +120,6 @@ def main():
        lista_partidas()
     elif st.session_state['pagina'] == "dashboard":
         dashboard()
-<<<<<<< HEAD
-
-=======
->>>>>>> 73bef46a6a57881c7c305e9fb2c65f8af5e7191b
 
 # Pagina de Login
 def login():
@@ -375,15 +365,6 @@ def lista_partidas():
                     st.rerun()
 
 def dashboard():
-    st.title('Clipe de Vídeo Incorporado')
-
-    
-        # Exibir o código de incorporação
-        st.markdown(embed_code, unsafe_allow_html=True)
-
-
-
-def dashboard():
 # Centralizar a imagem e o título
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
 
@@ -395,6 +376,15 @@ def dashboard():
         """,
         unsafe_allow_html=True
     )
+
+    headers = {'Authorization': st.session_state['Authorization']}
+    resposta = requests.get('http://127.0.0.1:5000/dashboard/<int:match_id>', headers=headers)
+    resposta_json = resposta.json()
+    
+    todos_os_links = resposta_json['links']
+
+    # Exibir o código de incorporação
+    st.markdown(todos_os_links, unsafe_allow_html=True)
 
 #sidebar para filtros (ficticio)
     st.sidebar.header("Análises:")
