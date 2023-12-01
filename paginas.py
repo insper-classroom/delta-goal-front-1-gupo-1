@@ -275,8 +275,18 @@ def troca_senha():
                 st.success(resposta_senha_json['mensagem'])
 
 def lista_partidas():
-# Centralizar a imagem e o título
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
+    
+    st.sidebar.write('-------')
+
+    if st.sidebar.button("Logout"):
+        realiza_logout()
+
+    expander_filtros = st.expander("Filtros")
+    with expander_filtros:
+        start_date = st.date_input("Selecione a data de início", None)
+        end_date = st.date_input("Selecione a data de término", None)
+        ligas = st.multiselect("Selecione as Ligas", ["Liga Nacional", "Copa Nacional", "Copa Internacional", "Estadual", "Outros"])
 
     st.markdown(
         """
@@ -287,34 +297,6 @@ def lista_partidas():
         unsafe_allow_html=True
     )
 
-#sidebar para filtros (ficticio)
-    st.sidebar.markdown(
-    """
-    <style>
-        .sidebar .sidebar-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Adiciona cabeçalho centralizado e botões centralizados na barra lateral
-    st.sidebar.header("Filtros:")
-    st.sidebar.button("Liga Nacional")
-    st.sidebar.button("Copa Nacional")
-    st.sidebar.button("Copa Internacional")
-    st.sidebar.button("Pré Temporada")
-    st.sidebar.button("Outros")
-
-    start_date = st.sidebar.date_input("Selecione a data de início", None)
-    end_date = st.sidebar.date_input("Selecione a data de término", None)
-
-    st.sidebar.markdown("---")
-    if st.sidebar.button("Logout"):
-        realiza_logout()
     if start_date and end_date:
         if start_date <= end_date:
             st.success(f'Selecionado intervalo de {start_date} a {end_date}')
@@ -331,7 +313,7 @@ def lista_partidas():
                  "Detalhes": "Detalhes do jogo Palmeiras X Goias"}
             ]
 
-            filtered_games = [game for game in games if start_date <= game["Data"] <= end_date]
+            filtered_games = [game for game in games if start_date <= game["Data"] <= end_date and game["Liga"] in ligas]
             if filtered_games:
                 st.write("Jogos dentro do intervalo selecionado:")
                 for game in filtered_games:
@@ -364,27 +346,23 @@ def lista_partidas():
         games = resposta.json()
         
         for index, game_info in enumerate(games['jogos']):
-            # Adicione a caixa de fundo para o jogo
             jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
             
-            # Adicione a caixa com a logo e o nome do time da casa
             with jogo_box:
                 col1, col2, col3 = st.columns([1, 3, 1])
 
-                # Adicione a caixa com a logo e o nome do time da casa
                 with col1:
                     st.image("assets/palmeiras.png", width=120, use_column_width=False, caption=game_info['time']['1']['nome'])
                     st.write("Time da Casa")
 
-                # Adicione a caixa com a logo e o nome do time visitante
                 with col3:
                     st.image("assets/RedBullBragantino.png", width=120, use_column_width=False, caption=game_info['time']['5']['nome'])
                     st.write("Time Visitante")
 
-                # Adicione o botão de estatísticas
                 if st.button("Estatísticas"):
                     st.session_state['pagina'] = "dashboard"
                     st.rerun()
+
 
 
 def dashboard():
