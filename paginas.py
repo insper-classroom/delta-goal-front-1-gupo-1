@@ -168,7 +168,6 @@ unsafe_allow_html=True
         if st.button("Esqueci a Senha"):
             st.session_state['pagina'] = "troca_senha"
             st.session_state['resposta_troca_senha'] = False
-            
             st.rerun()
 
     if dados_existentes:
@@ -362,12 +361,13 @@ def lista_partidas():
 
                 if st.button("Estatísticas"):
                     st.session_state['pagina'] = "dashboard"
+
                     st.rerun()
 
 def dashboard():
+    
 # Centralizar a imagem e o título
-    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
-
+    st.sidebar.image('assets/deltagolalogo.png', width=300, use_column_width=False)
     st.markdown(
         """
         <div style='text-align: center;'>
@@ -393,6 +393,26 @@ def dashboard():
 
     if st.sidebar.button("Quebra de Linhas"):
         st.header('Quebra')
+
+        time_casa, time_visi = st.tabs(["time1","time2"])
+
+        with time_casa:
+            st.image('assets/campo.jpeg')
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.header("Top 5 Rupturas")
+                
+            with col2:
+                st.header('salve2')
+        with time_visi:
+            st.image('imgs/campo.jpeg')
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.title('salve')
+            with col2:
+                st.title('salve2')
 
     st.sidebar.markdown("---")
     if st.sidebar.button("Voltar"):
