@@ -369,8 +369,7 @@ def lista_partidas():
 
 def dashboard(match_id):
     
-# Centralizar a imagem e o título
-    st.sidebar.image('assets/deltagolalogo.png', width=300, use_column_width=False)
+    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
     st.markdown(
         """
         <div style='text-align: center;'>
@@ -389,33 +388,25 @@ def dashboard(match_id):
         id_times.append(time[0])
     id_times = [int(numero) for numero in id_times]
     
-    # todos_os_links = resposta_json['links']
-
-    # Exibir o código de incorporação
-    # st.markdown(todos_os_links, unsafe_allow_html=True)
-
-    #sidebar para filtros (ficticio)
     st.sidebar.header("Análises:")
+    st.sidebar.write(' ')
+    st.sidebar.write(' ')
     if st.sidebar.button("Cruzamentos"):
         st.header('Cruzamento')
-
   
     if st.sidebar.button("Quebra de Linhas"):
         st.header('Quebra')
 
 
-        time_casa, time_visi = st.tabs(["time1","time2"])
+        time_casa, time_visi = st.tabs(["Palmeiras","RedBull Bragantino"])
 
         with time_casa:
+            st.header("Visão Geral")
+            st.image('assets/campo.jpeg')
 
             col1, col2 = st.columns([5,5])
             with col1:
-                st.header("Visão Geral")
-                st.image('assets/campo.jpeg')
-                
-                col3, col4 = st.columns(2)
-                with col3:
-                    st.markdown('**Maior números de rupturas**')
+                st.markdown('**Maior números de rupturas**')
 
                     top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
                     df = pd.DataFrame(
@@ -423,9 +414,9 @@ def dashboard(match_id):
                             "Jogador": list(top_5_rupturas_time_1.keys()),
                             "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
 
-                        }
-                    )
-                    st.table(df)
+                    }
+                )
+                st.table(df)
 
 
                 with col4:
