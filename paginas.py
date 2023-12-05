@@ -363,7 +363,6 @@ def lista_partidas():
                 if st.button("Estatísticas"):
                     st.session_state['pagina'] = "dashboard"
                     st.session_state['match_id'] = game_info['_id']
-                    print(st.session_state['match_id'])
 
                     st.rerun()
 
@@ -384,9 +383,12 @@ def dashboard(match_id):
     resposta_json = resposta.json()
     times = resposta_json['time']
     id_times = []
+    nome_times = []
     for time in times:
         id_times.append(time[0])
+        # nome_times.append(time[0])
     id_times = [int(numero) for numero in id_times]
+    
     
     st.sidebar.header("Análises:")
     st.sidebar.write(' ')
@@ -397,26 +399,29 @@ def dashboard(match_id):
     if st.sidebar.button("Quebra de Linhas"):
         st.header('Quebra')
 
+        for i in range(2):
+            nome_times.append(resposta_json['time'][f'{id_times[i]}']['nome'])
 
-        time_casa, time_visi = st.tabs(["Palmeiras","RedBull Bragantino"])
+        time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
         with time_casa:
-            st.header("Visão Geral")
-            st.image('assets/campo.jpeg')
-
             col1, col2 = st.columns([5,5])
             with col1:
-                st.markdown('**Maior números de rupturas**')
+                st.header("Visão Geral")
+                st.image('assets/campo.jpeg')
+                col3, col4 = st.columns(2)
+                with col3:
+                    st.markdown('**Maior números de rupturas**')
 
-                top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
-                df = pd.DataFrame(
+                    top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
+                    df = pd.DataFrame(
                     {
                         "Jogador": list(top_5_rupturas_time_1.keys()),
                         "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
 
-                }
-                )
-                st.table(df)
+                    }
+                    )
+                    st.table(df)
 
 
                 with col4:
