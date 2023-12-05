@@ -366,8 +366,11 @@ def lista_partidas():
 
                     st.rerun()
 
+
+exibir = 'cruzamentos'
 def dashboard(match_id):
     
+    global exibir
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
     st.markdown(
         """
@@ -386,17 +389,29 @@ def dashboard(match_id):
     nome_times = []
     for time in times:
         id_times.append(time[0])
-        # nome_times.append(time[0])
     id_times = [int(numero) for numero in id_times]
     
     
     st.sidebar.header("Análises:")
+
     st.sidebar.write(' ')
     st.sidebar.write(' ')
+
     if st.sidebar.button("Cruzamentos"):
-        st.header('Cruzamento')
-  
+        exibir = "cruzamentos"
     if st.sidebar.button("Quebra de Linhas"):
+        exibir = "quebra"
+
+
+    if exibir == 'cruzamentos':
+        st.header('Cruzamento')
+
+        for i in range(2):
+            nome_times.append(resposta_json['time'][f'{id_times[i]}']['nome'])
+
+        time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
+
+    if exibir == 'quebra':
         st.header('Quebra')
 
         for i in range(2):
@@ -405,63 +420,55 @@ def dashboard(match_id):
         time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
         with time_casa:
+            st.header("Visão Geral")
+            st.image('assets/campo.jpeg')
+
             col1, col2 = st.columns([5,5])
             with col1:
-                st.header("Visão Geral")
-                st.image('assets/campo.jpeg')
-                col3, col4 = st.columns(2)
-                with col3:
-                    st.markdown('**Maior números de rupturas**')
+                st.header('TOP 5 Rupturas')
 
-                    top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
-                    df = pd.DataFrame(
-                    {
-                        "Jogador": list(top_5_rupturas_time_1.keys()),
-                        "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
+                top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
+                df = pd.DataFrame(
+                {
+                    "Jogador": list(top_5_rupturas_time_1.keys()),
+                    "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
 
-                    }
-                    )
-                    st.table(df)
+                }
+                )
+                st.dataframe(data=df, hide_index=True)
 
-
-                with col4:
-                    st.markdown('**Desfechos**')
-                    grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_json, id_times[0])
-                    st.plotly_chart(grafico_desfechos_quebra_linha_time_1)
+                st.header('Desfechos')
+                grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_json, id_times[0])
+                st.plotly_chart(grafico_desfechos_quebra_linha_time_1, use_container_width=True)
                 
             with col2:
                 st.header('Lances')
 
 
         with time_visi:
+            st.header("Visão Geral")
+            st.image('assets/campo.jpeg')
 
-            col1, col2 = st.columns(2)
+            col1, col2 = st.columns([5,5])
             with col1:
-                st.title('salve')
-                st.header("Visão Geral")
-                st.image('assets/campo.jpeg')
-                
-                col3, col4 = st.columns(2)
-                with col3:
-                    st.markdown('**Maior números de rupturas**')
+                st.header('TOP 5 Rupturas')
 
-                    top_5_rupturas_time_2 = top_5_rupturas(resposta_json, id_times[1])
-                    df = pd.DataFrame(
-                        {
-                            "Jogador": list(top_5_rupturas_time_2.keys()),
-                            "Nº de Rupturas": list(top_5_rupturas_time_2.values()),
+                top_5_rupturas_time_2 = top_5_rupturas(resposta_json, id_times[1])
+                df = pd.DataFrame(
+                    {
+                        "Jogador": list(top_5_rupturas_time_2.keys()),
+                        "Nº de Rupturas": list(top_5_rupturas_time_2.values()),
 
-                        }
-                    )
-                    st.table(df)
+                    }
+                )
+                st.dataframe(data=df, hide_index=True)
 
-                with col4:
-                    st.markdown('**Desfechos**')
-                    grafico_desfechos_quebra_linha_time_2 = grafico_desfechos_quebra_linha(resposta_json, id_times[1])
-                    st.plotly_chart(grafico_desfechos_quebra_linha_time_2)
+                st.header('Desfechos')
+                grafico_desfechos_quebra_linha_time_2 = grafico_desfechos_quebra_linha(resposta_json, id_times[1])
+                st.plotly_chart(grafico_desfechos_quebra_linha_time_2, use_container_width=True)
                         
             with col2:
-                st.title('salve2')
+                st.header('Lances')
 
     st.sidebar.markdown("---")
     if st.sidebar.button("Voltar"):

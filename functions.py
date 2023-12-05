@@ -82,6 +82,7 @@ def grafico_desfechos_quebra_linha(json, time_id):
         ))
     
     fig = px.pie(df, values='n_rupturas', names='desfecho')
+    fig.update_layout(legend=dict(orientation="h", y=-0.2))
 
     return fig
 
