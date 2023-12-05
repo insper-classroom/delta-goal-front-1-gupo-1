@@ -55,10 +55,11 @@ def infos_ruptura(json, times_id):
 def top_5_rupturas(json, time_id):
     dict_top_5 = {}
     top_5 = json["time"][f"{time_id}"]["top_5"]
+    print(top_5)
 
     for jogador in top_5:
         nome = jogador["nome"]
-        n_rupturas = jogador["n_rupturas"]
+        n_rupturas = jogador["rupturas"]
 
         dict_top_5[nome] = n_rupturas
     

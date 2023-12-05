@@ -4,7 +4,8 @@ import requests
 import json
 from datetime import datetime, timedelta, date
 import extra_streamlit_components as stx
-
+from functions import *
+import pandas as pd
 
 #Configuração dos Cookies utilizando a bilbioteca stx
 def get_manager():
@@ -119,7 +120,7 @@ def main():
     elif st.session_state['pagina'] == "lista_partidas":
        lista_partidas()
     elif st.session_state['pagina'] == "dashboard":
-        dashboard()
+        dashboard(st.session_state['match_id'])
 
 # Pagina de Login
 def login():
@@ -361,10 +362,12 @@ def lista_partidas():
 
                 if st.button("Estatísticas"):
                     st.session_state['pagina'] = "dashboard"
+                    st.session_state['match_id'] = game_info['_id']
+                    print(st.session_state['match_id'])
 
                     st.rerun()
 
-def dashboard():
+def dashboard(match_id):
     
 # Centralizar a imagem e o título
     st.sidebar.image('assets/deltagolalogo.png', width=300, use_column_width=False)
@@ -378,35 +381,57 @@ def dashboard():
     )
 
     headers = {'Authorization': st.session_state['Authorization']}
-    resposta = requests.get('http://127.0.0.1:5000/dashboard/<int:match_id>', headers=headers)
+    resposta = requests.get(f'http://127.0.0.1:5000/dashboard/{match_id}', headers=headers) 
     resposta_json = resposta.json()
     
-    todos_os_links = resposta_json['links']
+    # todos_os_links = resposta_json['links']
 
     # Exibir o código de incorporação
-    st.markdown(todos_os_links, unsafe_allow_html=True)
+    # st.markdown(todos_os_links, unsafe_allow_html=True)
 
 #sidebar para filtros (ficticio)
     st.sidebar.header("Análises:")
     if st.sidebar.button("Cruzamentos"):
         st.header('Cruzamento')
 
+  
     if st.sidebar.button("Quebra de Linhas"):
         st.header('Quebra')
+
 
         time_casa, time_visi = st.tabs(["time1","time2"])
 
         with time_casa:
-            st.image('assets/campo.jpeg')
 
-            col1, col2 = st.columns(2)
+            col1, col2 = st.columns([5,5])
             with col1:
-                st.header("Top 5 Rupturas")
+                st.header("Visão Geral")
+                st.image('assets/campo.jpeg')
+                
+                col3, col4 = st.columns(2)
+                with col3:
+                    st.markdown('**Maior números de rupturas**')
+
+                    top_5_rupturas_time_1 = top_5_rupturas(resposta_json, 1)
+                    df = pd.DataFrame(
+                        {
+                            "Jogador": list(top_5_rupturas_time_1.keys()),
+                            "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
+
+                        }
+                    )
+                    st.table(df)
+
+
+                with col4:
+                    st.markdown('**Desfechos**')
+                    grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_json, 1)
+                    st.plotly_chart(grafico_desfechos_quebra_linha_time_1)
                 
             with col2:
-                st.header('salve2')
+                st.header('Lances')
         with time_visi:
-            st.image('imgs/campo.jpeg')
+            st.image('assets/campo.jpeg')
 
             col1, col2 = st.columns(2)
             with col1:
@@ -420,7 +445,6 @@ def dashboard():
         st.rerun()
     if st.sidebar.button("Logout"):
         realiza_logout()
-    
     
 if __name__ == "__main__":
     main()
