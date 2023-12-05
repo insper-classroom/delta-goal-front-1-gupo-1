@@ -408,13 +408,13 @@ def dashboard(match_id):
             with col1:
                 st.markdown('**Maior números de rupturas**')
 
-                    top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
-                    df = pd.DataFrame(
-                        {
-                            "Jogador": list(top_5_rupturas_time_1.keys()),
-                            "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
+                top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
+                df = pd.DataFrame(
+                    {
+                        "Jogador": list(top_5_rupturas_time_1.keys()),
+                        "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
 
-                    }
+                }
                 )
                 st.table(df)
 
