@@ -28,7 +28,7 @@ except:
 
 # Esta variavel controlara nosso fluxo de telas
 # na Funcao main organizamos qual pagina precisa ser mostrada
-if 'pagina' not in st.session_state or 'Authorization' not in all_cookies:
+if 'pagina' not in st.session_state or ('Authorization' not in all_cookies and st.session_state['pagina'] != 'troca_senha'):
     st.session_state['pagina'] = 'login'
 elif 'Authorization' in all_cookies and st.session_state['pagina'] == 'login':
     st.session_state['pagina'] = 'lista_partidas'
