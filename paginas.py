@@ -382,9 +382,11 @@ def dashboard(match_id):
     )
 
     headers = {'Authorization': st.session_state['Authorization']}
-    resposta = requests.get(f'http://127.0.0.1:5000/dashboard/{match_id}', headers=headers) 
-    resposta_json = resposta.json()
-    times = resposta_json['time']
+    resposta = requests.get(f'http://127.0.0.1:5000/dashboard/{match_id}', headers=headers)
+    resposta_quebra = resposta.json()['quebra_linha']
+    resposta_curz = resposta.json()['cruzamento']
+    print(resposta_curz)
+    times = resposta_quebra['time']
     id_times = []
     nome_times = []
     for time in times:
@@ -407,7 +409,7 @@ def dashboard(match_id):
         st.header('Cruzamento')
 
         for i in range(2):
-            nome_times.append(resposta_json['time'][f'{id_times[i]}']['nome'])
+            nome_times.append(resposta_quebra['time'][f'{id_times[i]}']['nome'])
 
         time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
@@ -415,7 +417,7 @@ def dashboard(match_id):
         st.header('Quebra')
 
         for i in range(2):
-            nome_times.append(resposta_json['time'][f'{id_times[i]}']['nome'])
+            nome_times.append(resposta_quebra['time'][f'{id_times[i]}']['nome'])
 
         time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
@@ -427,7 +429,7 @@ def dashboard(match_id):
             with col1:
                 st.header('TOP 5 Rupturas')
 
-                top_5_rupturas_time_1 = top_5_rupturas(resposta_json, id_times[0])
+                top_5_rupturas_time_1 = top_5_rupturas(resposta_quebra, id_times[0])
                 df = pd.DataFrame(
                 {
                     "Jogador": list(top_5_rupturas_time_1.keys()),
@@ -438,7 +440,7 @@ def dashboard(match_id):
                 st.dataframe(data=df, hide_index=True)
 
                 st.header('Desfechos')
-                grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_json, id_times[0])
+                grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_quebra, id_times[0])
                 st.plotly_chart(grafico_desfechos_quebra_linha_time_1, use_container_width=True)
                 
             with col2:
@@ -453,7 +455,7 @@ def dashboard(match_id):
             with col1:
                 st.header('TOP 5 Rupturas')
 
-                top_5_rupturas_time_2 = top_5_rupturas(resposta_json, id_times[1])
+                top_5_rupturas_time_2 = top_5_rupturas(resposta_quebra, id_times[1])
                 df = pd.DataFrame(
                     {
                         "Jogador": list(top_5_rupturas_time_2.keys()),
@@ -464,7 +466,7 @@ def dashboard(match_id):
                 st.dataframe(data=df, hide_index=True)
 
                 st.header('Desfechos')
-                grafico_desfechos_quebra_linha_time_2 = grafico_desfechos_quebra_linha(resposta_json, id_times[1])
+                grafico_desfechos_quebra_linha_time_2 = grafico_desfechos_quebra_linha(resposta_quebra, id_times[1])
                 st.plotly_chart(grafico_desfechos_quebra_linha_time_2, use_container_width=True)
                         
             with col2:
