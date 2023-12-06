@@ -55,7 +55,6 @@ def infos_ruptura(json, times_id):
 def top_5_rupturas(json, time_id):
     dict_top_5 = {}
     top_5 = json["time"][f"{time_id}"]["top_5"]
-    print(top_5)
 
     for jogador in top_5:
         nome = jogador["nome"]
@@ -82,7 +81,8 @@ def grafico_desfechos_quebra_linha(json, time_id):
         n_rupturas=n_rupturas
         ))
     
-    fig = px.pie(df, values='n_rupturas', names='desfecho', title='Desfechos das Rupturas')
+    fig = px.pie(df, values='n_rupturas', names='desfecho')
+    fig.update_layout(legend=dict(orientation="h", y=-0.2))
 
     return fig
 

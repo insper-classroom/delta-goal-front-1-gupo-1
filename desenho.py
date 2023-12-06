@@ -71,7 +71,7 @@ def draw_soccer_field():
     st.pyplot(fig)
 
 def main():
-    st.title('Campo de Futebol Interativo')
+    st.title('Campo de Futebol Interativos')
 
     # Chamar a função para desenhar o campo de futebol
     draw_soccer_field()
