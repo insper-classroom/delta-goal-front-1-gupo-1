@@ -182,12 +182,14 @@ def top_5_cruzamentos(json, time_id):
     top_cruzamentos = {}
     for cruzamento in cruzamentos:
         nomes = (cruzamento["nome_jogadores_time_cruzando"].split(","))
-        for nome in nomes:
+        numeros = (cruzamento["numero_jogadores_time_cruzando"].split(","))
+        for nome, numero in zip(nomes, numeros):
             nome = nome.strip()
-            if nome not in top_cruzamentos:
-                top_cruzamentos[nome] = 1
+            numero = numero.strip()
+            if f"{numero} - {nome}" not in top_cruzamentos:
+                top_cruzamentos[f"{numero} - {nome}"] = 1
             else:
-                top_cruzamentos[nome] += 1
+                top_cruzamentos[f"{numero} - {nome}"] += 1
 
     dicionario_crescente = {}
     for i in sorted(top_cruzamentos, key=top_cruzamentos.get, reverse=True):
