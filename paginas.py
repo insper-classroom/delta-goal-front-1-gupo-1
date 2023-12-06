@@ -454,15 +454,22 @@ def dashboard(match_id):
             with col1:
                 st.header('Top 5 Cruzamentos')
 
-                # top_5_rupturas_time_2 = top_5_rupturas(resposta_quebra, id_times[1])
-                # df = pd.DataFrame(
-                #     {
-                #         "Jogador": list(top_5_rupturas_time_2.keys()),
-                #         "Nº de Rupturas": list(top_5_rupturas_time_2.values()),
+                top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[1])
+                df = pd.DataFrame(
+                {
+                    "Jogador": list(top_5_cruz.keys())[:5],
+                    "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
 
-                #     }
-                # )
-                # st.dataframe(data=df, hide_index=True)
+                }
+                )
+
+                st.dataframe(data=df, hide_index=True)
+                
+                grafico_jogadores_cruzamentos = alt.Chart(df).mark_bar().encode(
+                    x='Jogador',
+                    y='Nº de Cruzamentos',
+                )
+                st.altair_chart(grafico_jogadores_cruzamentos, use_container_width=True)
 
                 st.header('Desfechos')
                 grafico_desfechos_cruzamentos_time_1 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[1])
