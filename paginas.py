@@ -384,8 +384,7 @@ def dashboard(match_id):
     headers = {'Authorization': st.session_state['Authorization']}
     resposta = requests.get(f'http://127.0.0.1:5000/dashboard/{match_id}', headers=headers)
     resposta_quebra = resposta.json()['quebra_linha']
-    resposta_curz = resposta.json()['cruzamento']
-    print(resposta_curz)
+    resposta_cruz = resposta.json()['cruzamento']
     times = resposta_quebra['time']
     id_times = []
     nome_times = []
@@ -406,15 +405,70 @@ def dashboard(match_id):
 
 
     if exibir == 'cruzamentos':
-        st.header('Cruzamento')
+        st.header('Cruzamento com Bola em Movimento')
 
         for i in range(2):
-            nome_times.append(resposta_quebra['time'][f'{id_times[i]}']['nome'])
+            nome_times.append(resposta_cruz['time'][f'{id_times[i]}']['nome'])
 
         time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
+        with time_casa:
+            st.header("Visão Geral")
+            st.image('assets/campo.jpeg')
+
+            col1, col2 = st.columns([5,5])
+            with col1:
+                st.header('Top 5 Rupturas')
+
+                # top_5_cruz_time_1 = top_5_rupturas(resposta_quebra, id_times[0])
+                # df = pd.DataFrame(
+                # {
+                #     "Jogador": list(top_5_rupturas_time_1.keys()),
+                #     "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
+
+                # }
+                # )
+                # st.dataframe(data=df, hide_index=True)
+
+                st.header('Desfechos')
+                grafico_desfechos_cruzamentos_time_1 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[0])
+                st.plotly_chart(grafico_desfechos_cruzamentos_time_1, use_container_width=True)
+                
+            with col2:
+                st.header('Lances')
+
+            dicionarios_cruz = cruzamentos_por_time(resposta_cruz, id_times)
+            dicionarios_cruz_time_1 = (dicionarios_cruz[0])
+            dicinarios_cruz_time_2 = (dicionarios_cruz[1])
+
+        with time_visi:
+            st.header("Visão Geral")
+            st.image('assets/campo.jpeg')
+
+            col1, col2 = st.columns([5,5])
+            with col1:
+                st.header('Top 5 Cruzamentos')
+
+                # top_5_rupturas_time_2 = top_5_rupturas(resposta_quebra, id_times[1])
+                # df = pd.DataFrame(
+                #     {
+                #         "Jogador": list(top_5_rupturas_time_2.keys()),
+                #         "Nº de Rupturas": list(top_5_rupturas_time_2.values()),
+
+                #     }
+                # )
+                # st.dataframe(data=df, hide_index=True)
+
+                st.header('Desfechos')
+                grafico_desfechos_cruzamentos_time_1 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[1])
+                st.plotly_chart(grafico_desfechos_cruzamentos_time_1, use_container_width=True)
+                        
+            with col2:
+                st.header('Lances')
+
+
     if exibir == 'quebra':
-        st.header('Quebra')
+        st.header('Quebra de Linha de Defesa')
 
         for i in range(2):
             nome_times.append(resposta_quebra['time'][f'{id_times[i]}']['nome'])
