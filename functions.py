@@ -125,6 +125,7 @@ def cruzamentos_por_time(json, times_id):
                 dict_cruzamentos_time_x[f"cruzamento_{n_cruzamento}"] = infos
             else:
                 dict_cruzamentos_time_y[f"cruzamento_{n_cruzamento}"] = infos
+            print(dict_cruzamentos_time_x)
 
     return dict_cruzamentos_time_x, dict_cruzamentos_time_y
 
@@ -172,7 +173,7 @@ def grafico_desfechos_cruzamentos(json, time_id):
         n_cruzamentos=n_cruzamentos
         ))
     
-    fig = px.pie(df, values='n_cruzamentos', names='desfecho', title='Desfechos dos Cruzamentos')
+    fig = px.pie(df, values='n_cruzamentos', names='desfecho')
 
     return fig
 
