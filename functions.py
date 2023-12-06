@@ -176,3 +176,24 @@ def grafico_desfechos_cruzamentos(json, time_id):
     fig = px.pie(df, values='n_cruzamentos', names='desfecho')
 
     return fig
+
+# Top 5 jogadores com mais cruzamentos
+def top_5_cruzamentos(json, time_id):
+    cruzamentos = json["time"][f"{time_id}"]["rupturas"]
+    top_cruzamentos = {}
+    for cruzamento in cruzamentos:
+        nomes = (cruzamento["nome_jogadores_time_cruzando"].split(","))
+        numeros = (cruzamento["numero_jogadores_time_cruzando"].split(","))
+        for nome, numero in zip(nomes, numeros):
+            nome = nome.strip()
+            numero = numero.strip()
+            if f"{numero} - {nome}" not in top_cruzamentos:
+                top_cruzamentos[f"{numero} - {nome}"] = 1
+            else:
+                top_cruzamentos[f"{numero} - {nome}"] += 1
+
+    dicionario_crescente = {}
+    for i in sorted(top_cruzamentos, key=top_cruzamentos.get, reverse=True):
+        dicionario_crescente[i] = top_cruzamentos[i]
+
+    return dicionario_crescente
