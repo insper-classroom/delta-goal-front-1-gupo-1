@@ -422,7 +422,7 @@ def dashboard(match_id):
                 st.header('Top 5 Cruzamentos')
 
                 top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[0])
-                df = pd.DataFrame(
+                df_lista = pd.DataFrame(
                 {
                     "Jogador": list(top_5_cruz.keys())[:5],
                     "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
@@ -430,9 +430,19 @@ def dashboard(match_id):
                 }
                 )
 
-                st.dataframe(data=df, hide_index=True)
+
+                df_grafico = pd.DataFrame(
+                {
+                    "Jogador": list(top_5_cruz.keys()),
+                    "Nº de Cruzamentos": list(top_5_cruz.values()),
+
+                }
+                )
+
+                st.dataframe(data=df_lista, hide_index=True)
                 
-                grafico_jogadores_cruzamentos = alt.Chart(df).mark_bar().encode(
+                st.header('Gráfico de cruzamentos')
+                grafico_jogadores_cruzamentos = alt.Chart(df_grafico).mark_bar().encode(
                     x='Jogador',
                     y='Nº de Cruzamentos',
                 )
@@ -455,7 +465,7 @@ def dashboard(match_id):
                 st.header('Top 5 Cruzamentos')
 
                 top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[1])
-                df = pd.DataFrame(
+                df_lista = pd.DataFrame(
                 {
                     "Jogador": list(top_5_cruz.keys())[:5],
                     "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
@@ -463,9 +473,19 @@ def dashboard(match_id):
                 }
                 )
 
-                st.dataframe(data=df, hide_index=True)
+                df_grafico = pd.DataFrame(
+                {
+                    "Jogador": list(top_5_cruz.keys()),
+                    "Nº de Cruzamentos": list(top_5_cruz.values()),
+
+                }
+                )
+
+                st.dataframe(data=df_lista, hide_index=True)
                 
-                grafico_jogadores_cruzamentos = alt.Chart(df).mark_bar().encode(
+
+                st.header('Gráfico de cruzamentos')
+                grafico_jogadores_cruzamentos = alt.Chart(df_grafico).mark_bar().encode(
                     x='Jogador',
                     y='Nº de Cruzamentos',
                 )
