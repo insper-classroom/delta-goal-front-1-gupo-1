@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, date
 import extra_streamlit_components as stx
 from functions import *
 import pandas as pd
+import altair as alt
 
 #Configuração dos Cookies utilizando a bilbioteca stx
 def get_manager():
@@ -418,17 +419,24 @@ def dashboard(match_id):
 
             col1, col2 = st.columns([5,5])
             with col1:
-                st.header('Top 5 Rupturas')
+                st.header('Top 5 Cruzamentos')
 
-                # top_5_cruz_time_1 = top_5_rupturas(resposta_quebra, id_times[0])
-                # df = pd.DataFrame(
-                # {
-                #     "Jogador": list(top_5_rupturas_time_1.keys()),
-                #     "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
+                top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[0])
+                df = pd.DataFrame(
+                {
+                    "Jogador": list(top_5_cruz.keys())[:5],
+                    "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
 
-                # }
-                # )
-                # st.dataframe(data=df, hide_index=True)
+                }
+                )
+
+                st.dataframe(data=df, hide_index=True)
+                
+                grafico_jogadores_cruzamentos = alt.Chart(df).mark_bar().encode(
+                    x='Jogador',
+                    y='Nº de Cruzamentos',
+                )
+                st.altair_chart(grafico_jogadores_cruzamentos, use_container_width=True)
 
                 st.header('Desfechos')
                 grafico_desfechos_cruzamentos_time_1 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[0])
@@ -437,9 +445,6 @@ def dashboard(match_id):
             with col2:
                 st.header('Lances')
 
-            dicionarios_cruz = cruzamentos_por_time(resposta_cruz, id_times)
-            dicionarios_cruz_time_1 = (dicionarios_cruz[0])
-            dicinarios_cruz_time_2 = (dicionarios_cruz[1])
 
         with time_visi:
             st.header("Visão Geral")
