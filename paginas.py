@@ -370,6 +370,7 @@ def lista_partidas():
 
 exibir = 'cruzamentos'
 def dashboard(match_id):
+
     
     global exibir
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
@@ -392,6 +393,16 @@ def dashboard(match_id):
     for time in times:
         id_times.append(time[0])
     id_times = [int(numero) for numero in id_times]
+
+    #Código que retorna os videos de todas as rupturas em um dict
+    todas_rupturas = infos_ruptura(resposta_quebra, id_times)
+    rupturas_time_1 = gera_dict_links_time(todas_rupturas[0])
+    rupturas_time_2 = gera_dict_links_time(todas_rupturas[1])
+
+    #Mesma coisa, mas para os cruzamentos
+    todas_rupturas = infos_cruzamento(resposta_cruz, id_times)
+    cruzamentos_time_1 = gera_dict_links_time(todas_rupturas[0])
+    cruzamentos_time_2 = gera_dict_links_time(todas_rupturas[1])
     
     
     st.sidebar.header("Análises:")

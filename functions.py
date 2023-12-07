@@ -197,3 +197,68 @@ def top_5_cruzamentos(json, time_id):
         dicionario_crescente[i] = top_cruzamentos[i]
 
     return dicionario_crescente
+
+# Rupturas do cruzamento de linha de defesa
+def infos_cruzamento(json, times_id):
+    dict_cruzamentos_time_x = {}
+    dict_cruzamentos_time_y = {}
+
+    for id in times_id:
+        n_cruzamento = 0
+        rupturas = json["time"][f"{id}"]["rupturas"]
+
+        for ruptura in rupturas:
+            print(ruptura)
+            n_cruzamento += 1
+            instante_cruzamento = ruptura["instante_cruzamento"]
+
+            # Verifica em qual tempo do jogo a ruptura ocorreu
+            lista_instante_cruzamento = instante_cruzamento.split(":")
+            segundos = minutos_segundos(lista_instante_cruzamento)
+            if segundos <= 2700:
+                tempo = "1º T"
+            else:
+                tempo = "2º T"
+
+            # Informações sobre a ruptura
+            infos = {
+                "logo": json["time"][f"{id}"]["logo"],
+                "instante_cruzamento": ruptura["instante_cruzamento"],
+                "tempo": tempo,
+                "desfecho": ruptura["desfecho"],
+                "zona": ruptura["zona"],
+                "jogadores_atacando": ruptura["nome_jogadores_time_cruzando"],
+                "jogadores_defendendo": ruptura["nome_jogadores_time_defendendo"],
+            }
+
+            # Adiciona as informações no dicionário
+            if id == 1:
+                dict_cruzamentos_time_x[f"cruzamento_{n_cruzamento}"] = infos
+            else:
+                dict_cruzamentos_time_y[f"cruzamento_{n_cruzamento}"] = infos
+
+    return dict_cruzamentos_time_x, dict_cruzamentos_time_y
+
+
+#Função que gera o link do video, auxiliar à função de links
+def gera_link(tempo):
+    hora = int(tempo[:2])
+    minutos = int(tempo[3:5])
+    segundos = int(tempo[6:]) + (minutos * 60) + (hora * 60 * 60)
+
+    link = f'https://www.youtube.com/watch?v=vqguX62PKFg&start={segundos-5}&end={segundos+5}'
+    return link
+
+#Função que retorna um dict com todo os cruzamentos e os videos de onde estes aconteceram
+def gera_dict_links_time(dict_rupturas):
+    links = {}
+    for ruptura in dict_rupturas:
+        if 'instante_ruptura' in dict_rupturas[ruptura]:
+            tempo = dict_rupturas[ruptura]['instante_ruptura']
+            link = gera_link(tempo)
+            links[ruptura] = link
+        else:
+            tempo = dict_rupturas[ruptura]['instante_cruzamento']
+            link = gera_link(tempo)
+            links[ruptura] = link
+    return links
