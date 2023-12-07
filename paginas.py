@@ -602,6 +602,7 @@ def dashboard(match_id):
         time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
         with time_casa:
+            info = ['','',False ]
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
@@ -658,6 +659,7 @@ def dashboard(match_id):
                         st.header('Zona')
                         all_data[info[1]]['zona']
         with time_visi:
+            info = ['','',False ]
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
