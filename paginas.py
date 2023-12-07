@@ -465,6 +465,17 @@ def dashboard(match_id):
                 
             with col2:
                 st.header('Lances')
+                cruzamentos = list(cruzamentos_time_1.keys())
+                print(cruzamentos_time_1)
+                with st.expander("Lista de Cruzamentos"):
+                    selected_cruzamento = st.selectbox("Selecione um cruzamento:", cruzamentos)
+                    selected_video = cruzamentos_time_1[selected_cruzamento]
+                    print(selected_video)
+                     # Construir o código de incorporação do clipe
+                    if st.button("Mostrar Vídeo"):
+                        st.markdown(selected_video, unsafe_allow_html=True)
+
+
 
 
         with time_visi:
