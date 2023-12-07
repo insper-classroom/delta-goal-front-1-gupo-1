@@ -246,7 +246,7 @@ def gera_link(tempo):
     minutos = int(tempo[3:5])
     segundos = int(tempo[6:]) + (minutos * 60) + (hora * 60 * 60)
 
-    link = f'<iframe width="320" height="315" src="https://www.youtube.com/embed/vqguX62PKFg?start={segundos - 5}&amp;end={segundos + 5};controls=0" frameborder="0" allowfullscreen></iframe>'
+    link = f'<iframe width="640" height="512" src="https://www.youtube.com/embed/vqguX62PKFg?start={segundos - 5}&amp;end={segundos + 5};controls=0" frameborder="0" allowfullscreen></iframe>'
     return link
 
 #Função que retorna um dict com todo os cruzamentos e os videos de onde estes aconteceram
