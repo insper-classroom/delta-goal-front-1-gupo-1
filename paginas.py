@@ -7,7 +7,7 @@ import extra_streamlit_components as stx
 from functions import *
 import pandas as pd
 import altair as alt
-
+st.set_page_config(layout="wide")
 #Configuração dos Cookies utilizando a bilbioteca stx
 def get_manager():
     return stx.CookieManager()
@@ -16,6 +16,8 @@ cookie_manager = get_manager()
 all_cookies = cookie_manager.get_all()
 try:
     #No logout por algum motivo após deslogar não podemos logar de novo. Ainda falta corrigir isso. Até la, deem refresh após deslogar para logar denovo
+    if 'sub_page' not in st.session_state:
+        st.session_state['sub_page'] = 'cruzamento'
     if 'logout' in st.session_state:
         cookie_manager.delete('Authorization')
 
@@ -368,9 +370,8 @@ def lista_partidas():
                     st.rerun()
 
 
-exibir = 'cruzamentos'
 def dashboard(match_id):
-    
+    info = ['', '',False]
     global exibir
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
     st.markdown(
@@ -400,20 +401,22 @@ def dashboard(match_id):
     st.sidebar.write(' ')
 
     if st.sidebar.button("Cruzamentos"):
-        exibir = "cruzamentos"
+        st.session_state['sub_page'] = 'cruzamentos'
     if st.sidebar.button("Quebra de Linhas"):
-        exibir = "quebra"
+        st.session_state['sub_page'] = 'quebra'
 
 
-    if exibir == 'cruzamentos':
+    if st.session_state['sub_page'] == 'cruzamentos':
         st.header('Cruzamento com Bola em Movimento')
-
+        
+        dados_cruzamentos = cruzamentos_por_time(resposta_cruz, id_times)
         for i in range(2):
             nome_times.append(resposta_cruz['time'][f'{id_times[i]}']['nome'])
 
         time_casa, time_visi = st.tabs([f"{nome_times[0]}",f"{nome_times[1]}"])
 
         with time_casa:
+            info = ['','',False ]
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
@@ -454,9 +457,55 @@ def dashboard(match_id):
                 
             with col2:
                 st.header('Lances')
+                data = []
+                all_data = []
+                for key, dados in dados_cruzamentos[0].items():
+                    data.append(f"{key}------{dados['instante_cruzamento']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
+                    all_data.append(dados)
+                    
+                with st.expander("Lista de Cruzamentos"):
+                    for i, data in enumerate(data):
+                        i+= 1
+                        st.text(data)
+                        if st.button(f"Analize Cruzamento {i}"):
+                            info = [data, i-1, True]
+                
+                if info[2]:
+                    st.title('video')
+                    jogado, jogadores, desfecho = st.columns(3)
+                    with jogado:
+                        st.header('Atacando')
+                        atacantes = all_data[info[1]]['atacantes'].split(',')
+                        for a in atacantes:
+                            a
+                    with jogadores:
+                        st.header('Defendendo')
+                        defensores = all_data[info[1]]['defensores'].split(',')
+                        for d in defensores:
+                            d
+                    with desfecho:
+                        st.header('Desfecho')
+                        all_data[info[1]]['desfecho']
+                        st.header('Zona')
+                        all_data[info[1]]['zona']
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         with time_visi:
+            info = ['','',False ]
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
@@ -497,10 +546,55 @@ def dashboard(match_id):
                         
             with col2:
                 st.header('Lances')
+                data = []
+                all_data = []
+                for key, dados in dados_cruzamentos[1].items():
+                    data.append(f"{key}------{dados['instante_cruzamento']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
+                    all_data.append(dados)
+                    
+                with st.expander("Lista de Cruzamentos"):
+                    for i, data in enumerate(data):
+                        i+= 1
+                        st.text(data)
+                        if st.button(f"Analize o Cruzamento {i}"):
+                            info = [data, i-1, True]
+                
+                if info[2]:
+                    st.title('video')
+                    jogado, jogadores, desfecho = st.columns(3)
+                    with jogado:
+                        st.header('Atacando')
+                        atacantes = all_data[info[1]]['atacantes'].split(',')
+                        for a in atacantes:
+                            a
+                    with jogadores:
+                        st.header('Defendendo')
+                        defensores = all_data[info[1]]['defensores'].split(',')
+                        for d in defensores:
+                            d
+                    with desfecho:
+                        st.header('Desfecho')
+                        all_data[info[1]]['desfecho']
+                        st.header('Zona')
+                        all_data[info[1]]['zona']
 
 
-    if exibir == 'quebra':
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if st.session_state['sub_page'] == 'quebra':
         st.header('Quebra de Linha de Defesa')
+        dados_ruptura_lances = infos_ruptura(resposta_quebra, id_times)
 
         for i in range(2):
             nome_times.append(resposta_quebra['time'][f'{id_times[i]}']['nome'])
@@ -531,8 +625,38 @@ def dashboard(match_id):
                 
             with col2:
                 st.header('Lances')
+                data = []
+                all_data = []
+                for key, dados in dados_ruptura_lances[0].items():
+                    data.append(f"{key}------{dados['instante_ruptura']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
+                    all_data.append(dados)
+                    
+                with st.expander("Lista de Quebra de linhas"):
+                    for i, data in enumerate(data):
+                        i+= 1
+                        data
+                        if st.button(f"Analize Ruptura {i}"):
+                            info = [data, i-1, True]
+                
+                if info[2]:
+                    st.title('video')
 
 
+                    jogado, jogadores, desfecho = st.columns(3)
+                    with jogado:
+                        st.header('Posse de Bola')
+                        all_data[info[1]]['posse_bola']
+                        st.header('Jogador em Ruptura')
+                        all_data[info[1]]['jogador_em_ruptura']
+                    with jogadores:
+                        st.header('Jogadores na Linha Defensiva')
+                        for player in all_data[info[1]]['jogadores_defesa']:
+                            player
+                    with desfecho:
+                        st.header('Desfecho')
+                        all_data[info[1]]['desfecho']
+                        st.header('Zona')
+                        all_data[info[1]]['zona']
         with time_visi:
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
@@ -557,6 +681,36 @@ def dashboard(match_id):
                         
             with col2:
                 st.header('Lances')
+                data = []
+                all_data = []
+                for key, dados in dados_ruptura_lances[1].items():
+                    data.append(f"{key}------{dados['instante_ruptura']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
+                    all_data.append(dados)
+                    
+                with st.expander("Lista de Quebra de linhas"):
+                    for i, data in enumerate(data):
+                        i+= 1
+                        st.text(data)
+                        if st.button(f"Analize A Ruptura {i}"):
+                            info = [data, i-1, True]
+                
+                if info[2]:
+                    st.title('video')
+                    jogado, jogadores, desfecho = st.columns(3)
+                    with jogado:
+                        st.header('Posse de Bola')
+                        all_data[info[1]]['posse_bola']
+                        st.header('Jogador em Ruptura')
+                        all_data[info[1]]['jogador_em_ruptura']
+                    with jogadores:
+                        st.header('Jogadores na Linha Defensiva')
+                        for player in all_data[info[1]]['jogadores_defesa']:
+                            player
+                    with desfecho:
+                        st.header('Desfecho')
+                        all_data[info[1]]['desfecho']
+                        st.header('Zona')
+                        all_data[info[1]]['zona']
 
     st.sidebar.markdown("---")
     if st.sidebar.button("Voltar"):
