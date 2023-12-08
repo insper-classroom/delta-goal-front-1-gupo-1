@@ -349,7 +349,7 @@ def lista_partidas():
         resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
         games = resposta.json()
         
-        for index, game_info in enumerate(games['jogos']):
+    for index, game_info in enumerate(games['jogos']):
             jogo_box = st.expander(f"{game_info['time']['1']['nome']} vs {game_info['time']['5']['nome']}")
             
             with jogo_box:
@@ -369,9 +369,9 @@ def lista_partidas():
 
                     st.rerun()
 
-
 def dashboard(match_id):
-    info = ['', '',False]
+    
+    info = ['', '', False]
     global exibir
     st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
     st.markdown(
@@ -382,6 +382,41 @@ def dashboard(match_id):
         """,
         unsafe_allow_html=True
     )
+
+    col1, col2, col3 = st.columns([1, 5, 1])  # Largura relativa de cada coluna
+
+    with col1:
+        st.image("assets/palmeiras.png", width=60)
+  
+        st.write("Chutes: 22")
+        st.write("Chutes ao gol: 6")
+        st.write("Posse de Bola: 59%")
+        st.write("Passes: 444")
+        st.write("Precisão de Passes: 81%")
+        st.write("Faltas: 12")
+        st.write("Cartões Amarelos: 1")
+        st.write("Cartões Vermelhos: 0")
+        st.write("Impedimentos: 3")
+        st.write("Escanteio: 15")
+
+
+    with col3:
+        st.image("assets/RedBullBragantino.png", width=60)
+  
+        st.write("Chutes: 8")
+        st.write("Chutes ao gol: 3")
+        st.write("Posse de Bola: 41")
+        st.write("Passes: 332")
+        st.write("Precisão de Passes: 79%")
+        st.write("Faltas: 19")
+        st.write("Cartões Amarelos: 4")
+        st.write("Cartões Vermelhos: 0")
+        st.write("Impedimentos: 2")
+        st.write("Escanteio: 6")
+
+
+
+
 
     headers = {'Authorization': st.session_state['Authorization']}
     resposta = requests.get(f'http://127.0.0.1:5000/dashboard/{match_id}', headers=headers)
@@ -467,8 +502,8 @@ def dashboard(match_id):
             data = []
             all_data = []
             for key, dados in dados_cruzamentos[0].items():
-                    data.append(f"{key}------{dados['instante_cruzamento']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
-                    all_data.append(dados)
+                data.append(f"{key}------{dados['instante_cruzamento']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
+                all_data.append(dados)
 
             with st.expander("Lista de Cruzamentos"):
                     selected_box = st.selectbox("Selecione um cruzamento:", data)
