@@ -187,7 +187,7 @@ def realizar_login(username, senha):
     dados_json = json.dumps(dados)
 
     headers = {'Content-Type': 'application/json'}
-    resposta = requests.post('http://127.0.0.1:5000/login/verificar_login', data=dados_json, headers=headers)
+    resposta = requests.post('https://sprint-c82dfd49e88d.herokuapp.com/login/verificar_login', data=dados_json, headers=headers)
     resposta_json = resposta.json()
     if 'token' in resposta_json:
         st.session_state['Authorization'] = resposta_json['token']
@@ -197,7 +197,7 @@ def realizar_login(username, senha):
 #Função auxiliar que realiza o logout
 def realiza_logout():
     headers = {'Authorization': st.session_state['Authorization']}
-    resposta = requests.get('http://127.0.0.1:5000/logout', headers=headers)
+    resposta = requests.get('https://sprint-c82dfd49e88d.herokuapp.com/logout', headers=headers)
     st.session_state['logout'] = resposta.json()['logout']
     st.rerun()
 
@@ -249,7 +249,7 @@ def troca_senha():
             dados = {'team': username}
             headers = {'Content-Type': 'application/json'}
 
-            resposta_usuario = requests.post('http://127.0.0.1:5000/login/verificar_time', data=json.dumps(dados), headers=headers)
+            resposta_usuario = requests.post('https://sprint-c82dfd49e88d.herokuapp.com/login/verificar_time', data=json.dumps(dados), headers=headers)
 
             resposta_usuario_json = resposta_usuario.json()
 
@@ -271,7 +271,7 @@ def troca_senha():
                 headers = {'Content-Type': 'application/json'}
 
                 # Enviar a solicitação POST com os dados no corpo
-                resposta_senha = requests.post('http://127.0.0.1:5000/login/alterar_senha', data=json.dumps(dados), headers=headers)
+                resposta_senha = requests.post('https://sprint-c82dfd49e88d.herokuapp.com/login/alterar_senha', data=json.dumps(dados), headers=headers)
                 # Interpretar a resposta como JSON
                 resposta_senha_json = resposta_senha.json()
 
@@ -346,7 +346,7 @@ def lista_partidas():
                 st.write(game["Detalhes"])
 
         headers = {'Authorization': st.session_state['Authorization']}
-        resposta = requests.get('http://127.0.0.1:5000/historico', headers=headers)
+        resposta = requests.get('https://sprint-c82dfd49e88d.herokuapp.com/historico', headers=headers)
         games = resposta.json()
         
     for index, game_info in enumerate(games['jogos']):
@@ -372,53 +372,9 @@ def lista_partidas():
 def dashboard(match_id):
     
     info = ['', '', False]
-    # global exibir
-    # st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
-    # st.markdown(
-    #     """
-    #     <div style='text-align: center;'>
-    #         <h1>Dashboard</h1>
-    #     </div>
-    #     """,
-    #     unsafe_allow_html=True
-    # )
-
-    # col1, col2, col3 = st.columns([1, 5, 1])  # Largura relativa de cada coluna
-
-    # with col1:
-    #     st.image("assets/palmeiras.png", width=60)
-    #     col11, col12 = st.columns([1,1])
-    #     with col11:
-    #         st.write("Chutes: 22")
-    #         st.write("Chutes ao gol: 6")
-    #         st.write("Posse de Bola: 59%")
-    #         st.write("Passes: 444")
-    #         st.write("Precisão de Passes: 81%")
-    #     with col12:
-    #         st.write("Faltas: 12")
-    #         st.write("Cartões Amarelos: 1")
-    #         st.write("Cartões Vermelhos: 0")
-    #         st.write("Impedimentos: 3")
-    #         st.write("Escanteio: 15")
-
-
-    # with col3:
-    #     st.image("assets/RedBullBragantino.png", width=60)
-  
-    #     st.write("Chutes: 8")
-    #     st.write("Chutes ao gol: 3")
-    #     st.write("Posse de Bola: 41")
-    #     st.write("Passes: 332")
-    #     st.write("Precisão de Passes: 79%")
-    #     st.write("Faltas: 19")
-    #     st.write("Cartões Amarelos: 4")
-    #     st.write("Cartões Vermelhos: 0")
-    #     st.write("Impedimentos: 2")
-    #     st.write("Escanteio: 6")
-
 
     headers = {'Authorization': st.session_state['Authorization']}
-    resposta = requests.get(f'http://127.0.0.1:5000/dashboard/{match_id}', headers=headers)
+    resposta = requests.get(f'https://sprint-c82dfd49e88d.herokuapp.com/dashboard/{match_id}', headers=headers)
     resposta_quebra = resposta.json()['quebra_linha']
     resposta_cruz = resposta.json()['cruzamento']
     times = resposta_quebra['time']
