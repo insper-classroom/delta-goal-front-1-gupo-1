@@ -17,7 +17,7 @@ all_cookies = cookie_manager.get_all()
 try:
     #No logout por algum motivo após deslogar não podemos logar de novo. Ainda falta corrigir isso. Até la, deem refresh após deslogar para logar denovo
     if 'sub_page' not in st.session_state:
-        st.session_state['sub_page'] = 'cruzamento'
+        st.session_state['sub_page'] = 'cruzamentos'
     if 'logout' in st.session_state:
         cookie_manager.delete('Authorization')
 
@@ -372,50 +372,49 @@ def lista_partidas():
 def dashboard(match_id):
     
     info = ['', '', False]
-    global exibir
-    st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
-    st.markdown(
-        """
-        <div style='text-align: center;'>
-            <h1>Dashboard</h1>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # global exibir
+    # st.sidebar.image('assets/deltagolalogo.png', width=150, use_column_width=False)
+    # st.markdown(
+    #     """
+    #     <div style='text-align: center;'>
+    #         <h1>Dashboard</h1>
+    #     </div>
+    #     """,
+    #     unsafe_allow_html=True
+    # )
 
-    col1, col2, col3 = st.columns([1, 5, 1])  # Largura relativa de cada coluna
+    # col1, col2, col3 = st.columns([1, 5, 1])  # Largura relativa de cada coluna
 
-    with col1:
-        st.image("assets/palmeiras.png", width=60)
+    # with col1:
+    #     st.image("assets/palmeiras.png", width=60)
+    #     col11, col12 = st.columns([1,1])
+    #     with col11:
+    #         st.write("Chutes: 22")
+    #         st.write("Chutes ao gol: 6")
+    #         st.write("Posse de Bola: 59%")
+    #         st.write("Passes: 444")
+    #         st.write("Precisão de Passes: 81%")
+    #     with col12:
+    #         st.write("Faltas: 12")
+    #         st.write("Cartões Amarelos: 1")
+    #         st.write("Cartões Vermelhos: 0")
+    #         st.write("Impedimentos: 3")
+    #         st.write("Escanteio: 15")
+
+
+    # with col3:
+    #     st.image("assets/RedBullBragantino.png", width=60)
   
-        st.write("Chutes: 22")
-        st.write("Chutes ao gol: 6")
-        st.write("Posse de Bola: 59%")
-        st.write("Passes: 444")
-        st.write("Precisão de Passes: 81%")
-        st.write("Faltas: 12")
-        st.write("Cartões Amarelos: 1")
-        st.write("Cartões Vermelhos: 0")
-        st.write("Impedimentos: 3")
-        st.write("Escanteio: 15")
-
-
-    with col3:
-        st.image("assets/RedBullBragantino.png", width=60)
-  
-        st.write("Chutes: 8")
-        st.write("Chutes ao gol: 3")
-        st.write("Posse de Bola: 41")
-        st.write("Passes: 332")
-        st.write("Precisão de Passes: 79%")
-        st.write("Faltas: 19")
-        st.write("Cartões Amarelos: 4")
-        st.write("Cartões Vermelhos: 0")
-        st.write("Impedimentos: 2")
-        st.write("Escanteio: 6")
-
-
-
+    #     st.write("Chutes: 8")
+    #     st.write("Chutes ao gol: 3")
+    #     st.write("Posse de Bola: 41")
+    #     st.write("Passes: 332")
+    #     st.write("Precisão de Passes: 79%")
+    #     st.write("Faltas: 19")
+    #     st.write("Cartões Amarelos: 4")
+    #     st.write("Cartões Vermelhos: 0")
+    #     st.write("Impedimentos: 2")
+    #     st.write("Escanteio: 6")
 
 
     headers = {'Authorization': st.session_state['Authorization']}
@@ -510,28 +509,28 @@ def dashboard(match_id):
                     selected_cruzamento = selected_box.split('-', 1)[0]
                     selected_video = cruzamentos_time_1[selected_cruzamento]
                     index_cruzamento = int(selected_cruzamento.split('_', 1)[1]) - 1
-                    print(index_cruzamento)
+
 
 
             if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
-                    jogado, jogadores, desfecho = st.columns(3)
-                    with jogado:
-                        st.header('Atacando')
-                        atacantes = all_data[index_cruzamento]['atacantes'].split(',')
-                        for a in atacantes:
-                            a
-                    with jogadores:
-                        st.header('Defendendo')
-                        defensores = all_data[index_cruzamento]['defensores'].split(',')
-                        for d in defensores:
-                            d
-                    with desfecho:
-                        st.header('Desfecho')
-                        all_data[index_cruzamento]['desfecho']
-                        st.header('Zona')
-                        all_data[index_cruzamento]['zona']
-                
+                    atacantes = all_data[index_cruzamento]['atacantes'].split(',')
+                    defensores = all_data[index_cruzamento]['defensores'].split(',')
+
+                    max_len = max(len(atacantes), len(defensores))
+
+
+                    atacantes += [None] * (max_len - len(atacantes))
+                    defensores += [None] * (max_len - len(defensores))
+
+                    data = pd.DataFrame({
+                        "Atacando": atacantes,
+                        "Defendendo": defensores,
+                        "Desfecho": [all_data[index_cruzamento]['desfecho']] + [None] * (max_len - 1),
+                        "Zona": [all_data[index_cruzamento]['zona']] + [None] * (max_len - 1)
+                    })
+
+                    st.dataframe(data=data, hide_index=True)                
 
         with time_visi:
             info = ['','',False ]
@@ -583,27 +582,27 @@ def dashboard(match_id):
                     selected_cruzamento = selected_box.split('-', 1)[0]
                     selected_video = cruzamentos_time_2[selected_cruzamento]
                     index_cruzamento = int(selected_cruzamento.split('_', 1)[1]) - 1
-                    print(index_cruzamento)
+
 
 
             if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
-                    jogado, jogadores, desfecho = st.columns(3)
-                    with jogado:
-                        st.header('Atacando')
-                        atacantes = all_data[index_cruzamento]['atacantes'].split(',')
-                        for a in atacantes:
-                            a
-                    with jogadores:
-                        st.header('Defendendo')
-                        defensores = all_data[index_cruzamento]['defensores'].split(',')
-                        for d in defensores:
-                            d
-                    with desfecho:
-                        st.header('Desfecho')
-                        all_data[index_cruzamento]['desfecho']
-                        st.header('Zona')
-                        all_data[index_cruzamento]['zona']
+                    atacantes = all_data[index_cruzamento]['atacantes'].split(',')
+                    defensores = all_data[index_cruzamento]['defensores'].split(',')
+
+                    max_len = max(len(atacantes), len(defensores))
+
+                    atacantes += [None] * (max_len - len(atacantes))
+                    defensores += [None] * (max_len - len(defensores))
+
+                    data = pd.DataFrame({
+                        "Atacando": atacantes,
+                        "Defendendo": defensores,
+                        "Desfecho": [all_data[index_cruzamento]['desfecho']] + [None] * (max_len - 1),
+                        "Zona": [all_data[index_cruzamento]['zona']] + [None] * (max_len - 1)
+                    })
+
+                    st.dataframe(data=data, hide_index=True)    
 
 
     if st.session_state['sub_page'] == 'quebra':
@@ -648,26 +647,28 @@ def dashboard(match_id):
                     selected_ruptura = selected_box.split('-', 1)[0]
                     selected_video = rupturas_time_1[selected_ruptura]
                     index_ruptura = int(selected_ruptura.split('_', 1)[1]) - 1
-                    print(index_ruptura)
-                
+
             if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
+                    posse_bola = all_data[index_ruptura]['posse_bola'].split(',') if all_data[index_ruptura].get('posse_bola') else []
+                    jogador_ruptura = [all_data[index_ruptura]['jogador_em_ruptura']] if all_data[index_ruptura].get('jogador_em_ruptura') else []
+                    defesa = all_data[index_ruptura]['jogadores_defesa'] if all_data[index_ruptura].get('jogadores_defesa') else []
 
-                    jogado, jogadores, desfecho = st.columns(3)
-                    with jogado:
-                        st.header('Posse de Bola')
-                        all_data[index_ruptura]['posse_bola']
-                        st.header('Jogador em Ruptura')
-                        all_data[index_ruptura]['jogador_em_ruptura']
-                    with jogadores:
-                        st.header('Jogadores na Linha Defensiva')
-                        for player in all_data[index_ruptura]['jogadores_defesa']:
-                            player
-                    with desfecho:
-                        st.header('Desfecho')
-                        all_data[index_ruptura]['desfecho']
-                        st.header('Zona')
-                        all_data[index_ruptura]['zona']
+                    max_len = max(len(posse_bola), len(jogador_ruptura), len(defesa))
+
+                    posse_bola += [None] * (max_len - len(posse_bola))
+                    jogador_ruptura += [None] * (max_len - len(jogador_ruptura))
+                    defesa += [None] * (max_len - len(defesa))
+
+                    data = pd.DataFrame({
+                        "Posse de bola": posse_bola,
+                        "Jogador em Ruptura": jogador_ruptura,
+                        "Linha de Defesa": defesa,
+                        "Desfecho": [all_data[index_ruptura]['desfecho']] + [None] * (max_len - 1),
+                        "Zona": [all_data[index_ruptura]['zona']] + [None] * (max_len - 1)
+                    })
+                    st.dataframe(data=data, hide_index=True)    
+
         with time_visi:
             info = ['','',False ]
             st.header("Visão Geral")
@@ -702,26 +703,29 @@ def dashboard(match_id):
                     selected_ruptura = selected_box.split('-', 1)[0]
                     selected_video = rupturas_time_2[selected_ruptura]
                     index_ruptura = int(selected_ruptura.split('_', 1)[1]) - 1
-                    print(index_ruptura)
+
                 
             if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
+                    posse_bola = all_data[index_ruptura]['posse_bola'].split(',') if all_data[index_ruptura].get('posse_bola') else []
+                    jogador_ruptura = [all_data[index_ruptura]['jogador_em_ruptura']] if all_data[index_ruptura].get('jogador_em_ruptura') else []
+                    defesa = all_data[index_ruptura]['jogadores_defesa'] if all_data[index_ruptura].get('jogadores_defesa') else []
 
-                    jogado, jogadores, desfecho = st.columns(3)
-                    with jogado:
-                        st.header('Posse de Bola')
-                        all_data[index_ruptura]['posse_bola']
-                        st.header('Jogador em Ruptura')
-                        all_data[index_ruptura]['jogador_em_ruptura']
-                    with jogadores:
-                        st.header('Jogadores na Linha Defensiva')
-                        for player in all_data[index_ruptura]['jogadores_defesa']:
-                            player
-                    with desfecho:
-                        st.header('Desfecho')
-                        all_data[index_ruptura]['desfecho']
-                        st.header('Zona')
-                        all_data[index_ruptura]['zona']
+                    max_len = max(len(posse_bola), len(jogador_ruptura), len(defesa))
+
+                    posse_bola += [None] * (max_len - len(posse_bola))
+                    jogador_ruptura += [None] * (max_len - len(jogador_ruptura))
+                    defesa += [None] * (max_len - len(defesa))
+
+                    data = pd.DataFrame({
+                        "Posse de bola": posse_bola,
+                        "Jogador em Ruptura": jogador_ruptura,
+                        "Linha de Defesa": defesa,
+                        "Desfecho": [all_data[index_ruptura]['desfecho']] + [None] * (max_len - 1),
+                        "Zona": [all_data[index_ruptura]['zona']] + [None] * (max_len - 1)
+                    })
+                    
+                    st.dataframe(data=data, hide_index=True)    
 
     st.sidebar.markdown("---")
     if st.sidebar.button("Voltar"):
