@@ -430,21 +430,19 @@ def dashboard(match_id):
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
-            col1, col2 = st.columns([5,5])
-            with col1:
-                st.header('Top 5 Cruzamentos')
+            st.header('Top 5 Cruzamentos')
 
-                top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[0])
-                df_lista = pd.DataFrame(
-                {
-                    "Jogador": list(top_5_cruz.keys())[:5],
-                    "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
+            top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[0])
+            df_lista = pd.DataFrame(
+            {
+                "Jogador": list(top_5_cruz.keys())[:5],
+                "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
 
                 }
                 )
 
 
-                df_grafico = pd.DataFrame(
+            df_grafico = pd.DataFrame(
                 {
                     "Jogador": list(top_5_cruz.keys()),
                     "Nº de Cruzamentos": list(top_5_cruz.values()),
@@ -452,28 +450,27 @@ def dashboard(match_id):
                 }
                 )
 
-                st.dataframe(data=df_lista, hide_index=True)
+            st.dataframe(data=df_lista, hide_index=True)
                 
-                st.header('Gráfico de cruzamentos')
-                grafico_jogadores_cruzamentos = alt.Chart(df_grafico).mark_bar().encode(
+            st.header('Gráfico de cruzamentos')
+            grafico_jogadores_cruzamentos = alt.Chart(df_grafico).mark_bar().encode(
                     x='Jogador',
                     y='Nº de Cruzamentos',
                 )
-                st.altair_chart(grafico_jogadores_cruzamentos, use_container_width=True)
+            st.altair_chart(grafico_jogadores_cruzamentos, use_container_width=True)
 
-                st.header('Desfechos')
-                grafico_desfechos_cruzamentos_time_1 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[0])
-                st.plotly_chart(grafico_desfechos_cruzamentos_time_1, use_container_width=True)
+            st.header('Desfechos')
+            grafico_desfechos_cruzamentos_time_1 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[0])
+            st.plotly_chart(grafico_desfechos_cruzamentos_time_1, use_container_width=True)
                 
-            with col2:
-                st.header('Lances')
-                data = []
-                all_data = []
-                for key, dados in dados_cruzamentos[0].items():
+            st.header('Lances')
+            data = []
+            all_data = []
+            for key, dados in dados_cruzamentos[0].items():
                     data.append(f"{key}------{dados['instante_cruzamento']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
                     all_data.append(dados)
 
-                with st.expander("Lista de Cruzamentos"):
+            with st.expander("Lista de Cruzamentos"):
                     selected_box = st.selectbox("Selecione um cruzamento:", data)
                     selected_cruzamento = selected_box.split('-', 1)[0]
                     selected_video = cruzamentos_time_1[selected_cruzamento]
@@ -481,7 +478,7 @@ def dashboard(match_id):
                     print(index_cruzamento)
 
 
-                if selected_video:
+            if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
                     jogado, jogadores, desfecho = st.columns(3)
                     with jogado:
@@ -506,12 +503,10 @@ def dashboard(match_id):
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
-            col1, col2 = st.columns([5,5])
-            with col1:
-                st.header('Top 5 Cruzamentos')
+            st.header('Top 5 Cruzamentos')
 
-                top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[1])
-                df_lista = pd.DataFrame(
+            top_5_cruz = top_5_cruzamentos(resposta_cruz, id_times[1])
+            df_lista = pd.DataFrame(
                 {
                     "Jogador": list(top_5_cruz.keys())[:5],
                     "Nº de Cruzamentos": list(top_5_cruz.values())[:5],
@@ -519,7 +514,7 @@ def dashboard(match_id):
                 }
                 )
 
-                df_grafico = pd.DataFrame(
+            df_grafico = pd.DataFrame(
                 {
                     "Jogador": list(top_5_cruz.keys()),
                     "Nº de Cruzamentos": list(top_5_cruz.values()),
@@ -527,29 +522,28 @@ def dashboard(match_id):
                 }
                 )
 
-                st.dataframe(data=df_lista, hide_index=True)
+            st.dataframe(data=df_lista, hide_index=True)
                 
 
-                st.header('Gráfico de cruzamentos')
-                grafico_jogadores_cruzamentos = alt.Chart(df_grafico).mark_bar().encode(
+            st.header('Gráfico de cruzamentos')
+            grafico_jogadores_cruzamentos = alt.Chart(df_grafico).mark_bar().encode(
                     x='Jogador',
                     y='Nº de Cruzamentos',
                 )
-                st.altair_chart(grafico_jogadores_cruzamentos, use_container_width=True)
+            st.altair_chart(grafico_jogadores_cruzamentos, use_container_width=True)
 
-                st.header('Desfechos')
-                grafico_desfechos_cruzamentos_time_2 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[1])
-                st.plotly_chart(grafico_desfechos_cruzamentos_time_2, use_container_width=True)
+            st.header('Desfechos')
+            grafico_desfechos_cruzamentos_time_2 = grafico_desfechos_cruzamentos(resposta_cruz, id_times[1])
+            st.plotly_chart(grafico_desfechos_cruzamentos_time_2, use_container_width=True)
                         
-            with col2:
-                st.header('Lances')
-                data = []
-                all_data = []
-                for key, dados in dados_cruzamentos[1].items():
+            st.header('Lances')
+            data = []
+            all_data = []
+            for key, dados in dados_cruzamentos[1].items():
                     data.append(f"{key}------{dados['instante_cruzamento']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
                     all_data.append(dados)
 
-                with st.expander("Lista de Cruzamentos"):
+            with st.expander("Lista de Cruzamentos"):
                     selected_box = st.selectbox("Selecione um cruzamento:", data)
                     selected_cruzamento = selected_box.split('-', 1)[0]
                     selected_video = cruzamentos_time_2[selected_cruzamento]
@@ -557,7 +551,7 @@ def dashboard(match_id):
                     print(index_cruzamento)
 
 
-                if selected_video:
+            if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
                     jogado, jogadores, desfecho = st.columns(3)
                     with jogado:
@@ -591,40 +585,37 @@ def dashboard(match_id):
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
-            col1, col2 = st.columns([5,5])
-            with col1:
-                st.header('TOP 5 Rupturas')
+            st.header('TOP 5 Rupturas')
 
-                top_5_rupturas_time_1 = top_5_rupturas(resposta_quebra, id_times[0])
-                df = pd.DataFrame(
-                {
+            top_5_rupturas_time_1 = top_5_rupturas(resposta_quebra, id_times[0])
+            df = pd.DataFrame(
+            {
                     "Jogador": list(top_5_rupturas_time_1.keys()),
                     "Nº de Rupturas": list(top_5_rupturas_time_1.values()),
 
-                }
+            }
                 )
-                st.dataframe(data=df, hide_index=True)
+            st.dataframe(data=df, hide_index=True)
 
-                st.header('Desfechos')
-                grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_quebra, id_times[0])
-                st.plotly_chart(grafico_desfechos_quebra_linha_time_1, use_container_width=True)
+            st.header('Desfechos')
+            grafico_desfechos_quebra_linha_time_1 = grafico_desfechos_quebra_linha(resposta_quebra, id_times[0])
+            st.plotly_chart(grafico_desfechos_quebra_linha_time_1, use_container_width=True)
                 
-            with col2:
-                st.header('Lances')
-                data = []
-                all_data = []
-                for key, dados in dados_ruptura_lances[0].items():
+            st.header('Lances')
+            data = []
+            all_data = []
+            for key, dados in dados_ruptura_lances[0].items():
                     data.append(f"{key}------{dados['instante_ruptura']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
                     all_data.append(dados)
                     
-                with st.expander("Lista de Rupturas"):
+            with st.expander("Lista de Rupturas"):
                     selected_box = st.selectbox("Selecione uma ruptura:", data)
                     selected_ruptura = selected_box.split('-', 1)[0]
                     selected_video = rupturas_time_1[selected_ruptura]
                     index_ruptura = int(selected_ruptura.split('_', 1)[1]) - 1
                     print(index_ruptura)
                 
-                if selected_video:
+            if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
 
                     jogado, jogadores, desfecho = st.columns(3)
@@ -647,40 +638,38 @@ def dashboard(match_id):
             st.header("Visão Geral")
             st.image('assets/campo.jpeg')
 
-            col1, col2 = st.columns([5,5])
-            with col1:
-                st.header('TOP 5 Rupturas')
+            st.header('TOP 5 Rupturas')
 
-                top_5_rupturas_time_2 = top_5_rupturas(resposta_quebra, id_times[1])
-                df = pd.DataFrame(
+            top_5_rupturas_time_2 = top_5_rupturas(resposta_quebra, id_times[1])
+            df = pd.DataFrame(
                     {
                         "Jogador": list(top_5_rupturas_time_2.keys()),
                         "Nº de Rupturas": list(top_5_rupturas_time_2.values()),
 
                     }
                 )
-                st.dataframe(data=df, hide_index=True)
+            st.dataframe(data=df, hide_index=True)
 
-                st.header('Desfechos')
-                grafico_desfechos_quebra_linha_time_2 = grafico_desfechos_quebra_linha(resposta_quebra, id_times[1])
-                st.plotly_chart(grafico_desfechos_quebra_linha_time_2, use_container_width=True)
+            st.header('Desfechos')
+            grafico_desfechos_quebra_linha_time_2 = grafico_desfechos_quebra_linha(resposta_quebra, id_times[1])
+            st.plotly_chart(grafico_desfechos_quebra_linha_time_2, use_container_width=True)
                         
-            with col2:
-                st.header('Lances')
-                data = []
-                all_data = []
-                for key, dados in dados_ruptura_lances[1].items():
+
+            st.header('Lances')
+            data = []
+            all_data = []
+            for key, dados in dados_ruptura_lances[1].items():
                     data.append(f"{key}------{dados['instante_ruptura']}-{dados['tempo']} / {dados['desfecho']} / {dados['zona']}")
                     all_data.append(dados)
                     
-                with st.expander("Lista de Rupturas"):
+            with st.expander("Lista de Rupturas"):
                     selected_box = st.selectbox("Selecione uma ruptura:", data)
                     selected_ruptura = selected_box.split('-', 1)[0]
                     selected_video = rupturas_time_2[selected_ruptura]
                     index_ruptura = int(selected_ruptura.split('_', 1)[1]) - 1
                     print(index_ruptura)
                 
-                if selected_video:
+            if selected_video:
                     st.markdown(selected_video, unsafe_allow_html=True)
 
                     jogado, jogadores, desfecho = st.columns(3)
