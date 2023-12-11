@@ -418,7 +418,7 @@ def dashboard(match_id):
         with time_casa:
             info = ['','',False ]
             st.header("Visão Geral")
-            st.image('assets/campo.jpeg')
+            st.image('assets/campo_c.jpeg')
 
             st.header('Top 5 Cruzamentos')
 
@@ -491,7 +491,7 @@ def dashboard(match_id):
         with time_visi:
             info = ['','',False ]
             st.header("Visão Geral")
-            st.image('assets/campo.jpeg')
+            st.image('assets/campo_c.jpeg')
 
             st.header('Top 5 Cruzamentos')
 
@@ -573,7 +573,7 @@ def dashboard(match_id):
         with time_casa:
             info = ['','',False ]
             st.header("Visão Geral")
-            st.image('assets/campo.jpeg')
+            st.image('assets/campo_q.jpeg')
 
             st.header('TOP 5 Rupturas')
 
@@ -628,7 +628,7 @@ def dashboard(match_id):
         with time_visi:
             info = ['','',False ]
             st.header("Visão Geral")
-            st.image('assets/campo.jpeg')
+            st.image('assets/campo_q.jpeg')
 
             st.header('TOP 5 Rupturas')
 
